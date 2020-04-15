@@ -1,0 +1,3 @@
+rootProject.name='ChatSdkImplDemo'
+include ':app'
+include ':mychatlibrary'
