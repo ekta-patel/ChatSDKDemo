@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FE5D05</color>
+    <color name="colorPrimaryDark">#FE4604</color>
+    <color name="colorAccent">#FE5D05</color>
+
+    <color name="imageSenderBackground">#3700B3</color>
+    <color name="imageReceiverBackground">#03DAC5</color>
+</resources>

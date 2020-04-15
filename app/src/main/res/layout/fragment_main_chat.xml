@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.chatmain.MainChatFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMessages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/tilMessage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:stackFromEnd="true" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMessage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/fabSendMessage"
+            app:layout_constraintEnd_toStartOf="@id/fabSendMessage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/fabSendMessage">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="type something..." />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabSendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_send"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

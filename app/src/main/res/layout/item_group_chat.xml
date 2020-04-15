@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="group"
+            type="com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdvProfilePic"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            app:imageUrl="@{group.profilePic}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemGroupName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@{group.name}"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/itemBtnJoin"
+            app:layout_constraintEnd_toStartOf="@id/itemBtnJoin"
+            app:layout_constraintStart_toEndOf="@id/sdvProfilePic"
+            app:layout_constraintTop_toTopOf="@id/itemBtnJoin" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/itemBtnJoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Join"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
