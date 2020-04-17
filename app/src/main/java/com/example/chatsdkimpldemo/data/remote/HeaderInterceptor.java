@@ -1,5 +1,7 @@
 package com.example.chatsdkimpldemo.data.remote;
 
+import com.example.mychatlibrary.data.local.AppSharedPrefManager;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -14,7 +16,7 @@ public class HeaderInterceptor implements Interceptor {
     public Response intercept(@NotNull Chain chain) throws IOException {
         Request original = chain.request();
         Request.Builder requestBuilder = original.newBuilder()
-//                .header("Authorization", "bearer " + AppSharedPrefManager.getToken())
+                .header("Authorization", "bearer " + AppSharedPrefManager.getToken())
                 .header("Content-Type", "application/json");
         Request request = requestBuilder.build();
         return chain.proceed(request);

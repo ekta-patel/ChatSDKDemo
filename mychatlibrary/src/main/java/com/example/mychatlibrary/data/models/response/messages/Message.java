@@ -3,6 +3,8 @@ package com.example.mychatlibrary.data.models.response.messages;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class Message {
 
     @SerializedName("id")
@@ -81,5 +83,19 @@ public class Message {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return chatroomId == message.chatroomId &&
+                userId == message.userId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatroomId, userId);
     }
 }

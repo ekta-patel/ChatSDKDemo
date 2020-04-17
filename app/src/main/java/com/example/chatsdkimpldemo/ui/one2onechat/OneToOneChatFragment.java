@@ -3,7 +3,6 @@ package com.example.chatsdkimpldemo.ui.one2onechat;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
@@ -17,7 +16,6 @@ import com.example.chatsdkimpldemo.ui.base.BaseFragment;
 import com.example.chatsdkimpldemo.ui.base.RecyclerViewItemClickListener;
 import com.example.chatsdkimpldemo.ui.home.HomeFragmentDirections;
 import com.example.chatsdkimpldemo.utils.Constants;
-import com.example.mychatlibrary.actioncables.Message;
 import com.example.mychatlibrary.data.models.response.one2onechat.OneToOneChatDataResponse;
 
 import java.util.ArrayList;
@@ -68,13 +66,17 @@ public class OneToOneChatFragment extends BaseFragment<FragmentOnetooneChatBindi
                 dismissLoader();
             }
         });
-        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Message>() {
-            @Override
-            public void onChanged(Message message) {
-                if (message != null) {
-//                    responseList.add(message);
-                    adapter.notifyItemInserted(adapter.getItemCount());
+        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
+            if (message != null) {
+                for (OneToOneChatDataResponse x :
+                        responseList) {
+                    if (x.getChatrooms().getId() == message.getChatroomId() && x.getUser().getId() == message.getUserId()) {
+                        int index = responseList.indexOf(x);
+                        x.setMessages(message);
+                        adapter.notifyItemChanged(index, x);
+                    }
                 }
+
             }
         });
     }

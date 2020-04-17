@@ -5,8 +5,11 @@ import java.io.IOException
 import java.net.CookieHandler
 import java.net.URI
 import java.net.URLEncoder
+import java.security.cert.X509Certificate
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
+
 
 typealias OkHttpClientFactory = () -> OkHttpClient
 
@@ -124,7 +127,22 @@ class Connection constructor(
         val httpClientBuilder = (options.okHttpClientFactory?.invoke()
                 ?: OkHttpClient()).newBuilder()
 
-        options.sslContext?.let { httpClientBuilder.sslSocketFactory(it.socketFactory) }
+        options.sslContext?.let {
+            httpClientBuilder.sslSocketFactory(it.socketFactory, object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+
+                }
+
+                override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+
+                }
+
+                override fun getAcceptedIssuers(): Array<X509Certificate> {
+                    return arrayOf()
+                }
+
+            })
+        }
         options.hostnameVerifier?.let { httpClientBuilder.hostnameVerifier(it) }
 
         val urlBuilder = StringBuilder(uri.toString())
@@ -141,7 +159,7 @@ class Connection constructor(
 
         httpClient.newWebSocket(request, webSocketListener)
 
-        httpClient.dispatcher().executorService().shutdown()
+        httpClient.dispatcher.executorService.shutdown()
     }
 
     private suspend fun doSend(data: Any) {

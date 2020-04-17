@@ -3,7 +3,6 @@ package com.example.chatsdkimpldemo.ui.chatrooms.all;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -15,7 +14,6 @@ import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
 import com.example.chatsdkimpldemo.ui.base.RecyclerViewItemClickListener;
 import com.example.chatsdkimpldemo.ui.chatrooms.GroupChatViewModel;
-import com.example.mychatlibrary.actioncables.Message;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 
 import java.util.ArrayList;
@@ -71,13 +69,10 @@ public class GroupChatRoomsFragment extends BaseFragment<FragmentGroupChatBindin
                 dismissLoader();
             }
         });
-        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Message>() {
-            @Override
-            public void onChanged(Message message) {
-                if (message != null) {
+        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
+            if (message != null) {
 //                    responseList.add(message);
-                    adapter.notifyItemInserted(adapter.getItemCount());
-                }
+                adapter.notifyItemInserted(adapter.getItemCount());
             }
         });
     }

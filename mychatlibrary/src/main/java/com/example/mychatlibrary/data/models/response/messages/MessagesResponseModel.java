@@ -7,37 +7,51 @@ import java.util.List;
 
 public class MessagesResponseModel {
 
-    @SerializedName("id")
+    @SerializedName("success")
     @Expose
-    private int id;
-    @SerializedName("name")
+    private boolean success;
+    @SerializedName("message")
     @Expose
-    private String name;
-    @SerializedName("messages")
+    private String message;
+    @SerializedName("data")
     @Expose
-    private List<Message> messages = null;
+    private MessageResponseDataModel data;
+    //    @SerializedName("meta")
+//    @Expose
+//    private Meta meta;
+    @SerializedName("errors")
+    @Expose
+    private List<String> errors = null;
 
-    public int getId() {
-        return id;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
-    public String getName() {
-        return name;
+    public String getMessage() {
+        return message;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public MessageResponseDataModel getData() {
+        return data;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setData(MessageResponseDataModel data) {
+        this.data = data;
+    }
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
     }
 }

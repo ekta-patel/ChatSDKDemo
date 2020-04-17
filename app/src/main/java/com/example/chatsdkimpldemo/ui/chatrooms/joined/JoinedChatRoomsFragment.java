@@ -7,7 +7,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
@@ -23,7 +22,6 @@ import com.example.chatsdkimpldemo.ui.base.RecyclerViewItemClickListener;
 import com.example.chatsdkimpldemo.ui.chatrooms.GroupChatViewModel;
 import com.example.chatsdkimpldemo.ui.home.HomeFragmentDirections;
 import com.example.chatsdkimpldemo.utils.Constants;
-import com.example.mychatlibrary.actioncables.Message;
 import com.example.mychatlibrary.data.models.request.createchatroom.Chatroom;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
@@ -113,13 +111,10 @@ public class JoinedChatRoomsFragment extends BaseFragment<FragmentJoinedGroupCha
                 dismissLoader();
             }
         });
-        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), new Observer<Message>() {
-            @Override
-            public void onChanged(Message message) {
-                if (message != null) {
+        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
+            if (message != null) {
 //                    responseList.add(message);
-                    adapter.notifyItemInserted(adapter.getItemCount());
-                }
+                adapter.notifyItemInserted(adapter.getItemCount());
             }
         });
     }

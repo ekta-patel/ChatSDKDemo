@@ -3,9 +3,11 @@ package com.example.chatsdkimpldemo.data.remote;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
-//import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+//import okhttp3.logging.HttpLoggingInterceptor;
 
 public class ApiClient {
 
@@ -14,13 +16,13 @@ public class ApiClient {
 
     private static synchronized Retrofit getClient() {
         if (retrofit == null) {
-//            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-//            loggingInterceptor.level(HttpLoggingInterceptor.Level.BODY);
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            loggingInterceptor.level(HttpLoggingInterceptor.Level.BODY);
             OkHttpClient client = new OkHttpClient.Builder()
                     .readTimeout(60, TimeUnit.SECONDS)
                     .writeTimeout(60, TimeUnit.SECONDS)
                     .connectTimeout(60, TimeUnit.SECONDS)
-//                    .addInterceptor(loggingInterceptor)
+                    .addInterceptor(loggingInterceptor)
                     .addInterceptor(new HeaderInterceptor())
                     .build();
             retrofit = new Retrofit.Builder()

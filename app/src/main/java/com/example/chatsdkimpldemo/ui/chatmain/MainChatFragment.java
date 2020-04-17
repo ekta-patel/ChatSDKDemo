@@ -2,7 +2,6 @@ package com.example.chatsdkimpldemo.ui.chatmain;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -46,8 +45,8 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
     @Override
     protected void initFragment() {
         navController = NavHostFragment.findNavController(MainChatFragment.this);
-        this.chatSocket = ((MainActivity) Objects.requireNonNull(getActivity())).getChatSocket();
         this.activityViewModel = ((MainActivity) Objects.requireNonNull(getActivity())).getViewModel();
+        this.chatSocket = activityViewModel.getChatSocket();
         if (getArguments() != null) {
             Bundle b = getArguments().getBundle("my_args");
             if (b != null) {
@@ -70,6 +69,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             String msg = Objects.requireNonNull(binding.tieMessage.getText()).toString();
             if (!TextUtils.isEmpty(msg)) {
                 chatSocket.sendMessage(1, msg, false, null);
+                binding.tieMessage.setText(null);
             }
         });
 
@@ -100,8 +100,8 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
         activityViewModel.getMessageResponseLiveData().observe(getViewLifecycleOwner(), res -> {
             if (res != null) {
                 this.messageList.clear();
-                if (res.getMessages() != null) {
-                    this.messageList.addAll(res.getMessages());
+                if (res.getData().getMessageChatroom().getMessages() != null) {
+                    this.messageList.addAll(res.getData().getMessageChatroom().getMessages());
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -113,8 +113,10 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                 dismissLoader();
             }
         });
-        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message ->
-                Log.e(TAG, "Hello World")
+        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
+                    messageList.add(message);
+                    adapter.notifyItemInserted(messageList.size());
+                }
         );
     }
 

@@ -1,5 +1,7 @@
 package com.example.chatsdkimpldemo.ui.activities;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -7,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.chatsdkimpldemo.utils.Event;
 import com.example.mychatlibrary.ConfigChatSocket;
-import com.example.mychatlibrary.actioncables.Message;
 import com.example.mychatlibrary.data.local.AppSharedPrefManager;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
@@ -16,6 +17,7 @@ import com.example.mychatlibrary.data.models.response.groupchat.GroupChatRespons
 import com.example.mychatlibrary.data.models.response.joinchatroom.JoinChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.joinedgroups.JoinedChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.leavechatroom.LeaveChatroomResponse;
+import com.example.mychatlibrary.data.models.response.messages.Message;
 import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
 import com.example.mychatlibrary.data.models.response.one2onechat.OneToOneChatResponse;
 
@@ -23,10 +25,83 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainViewModel extends ViewModel {
 
+    private static final String TAG = MainViewModel.class.getSimpleName();
     private ConfigChatSocket chatSocket;
+
+    {
+        try {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Authorization", "bearer " + AppSharedPrefManager.getToken());
+            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel", new HashMap<String, String>()).headers(headers).addChatListener(new ConfigChatSocket.ChatCallback() {
+                @Override
+                public void onConnected() {
+                    Log.e(TAG, "CONNECTED");
+                }
+
+                @Override
+                public void onDisConnected() {
+                    Log.e(TAG, "DIS-CONNECTED");
+                }
+
+                @Override
+                public void onRejected() {
+                    Log.e(TAG, "REJECTED");
+                }
+
+                @Override
+                public void onFailed(Throwable t) {
+                    Log.e(TAG, "FAILED" + t.getMessage());
+                }
+
+                @Override
+                public <T> void onReceived(T any) {
+                    Log.e(TAG, "RECEIVED");
+                    if (any instanceof Map) {
+                        Map response = (Map) any;
+                        if (response.containsKey("success")) {
+                            if ((boolean) response.get("success")) {
+                                if (response.containsKey("data")) {
+                                    Map mainResponse = (Map) response.get("data");
+                                    if (Objects.requireNonNull(mainResponse).containsKey("messages")) {
+                                        Map message = (Map) mainResponse.get("messages");
+                                        if (message != null) {
+                                            Message message1 = new Message();
+                                            int messageId = message.containsKey("id") ? Objects.requireNonNull((Double) message.get("id")).intValue() : -1;
+                                            message1.setId(messageId);
+                                            int messageChatroomId = message.containsKey("chatroom_id") ? ((Double) Objects.requireNonNull(message.get("chatroom_id"))).intValue() : -1;
+                                            message1.setChatroomId(messageChatroomId);
+                                            int messageUserId = message.containsKey("user_id") ? Objects.requireNonNull((Double) message.get("user_id")).intValue() : -1;
+                                            message1.setUserId(messageUserId);
+                                            String messageBody = message.containsKey("body") ? (String) message.get("body") : "";
+                                            message1.setBody(messageBody);
+                                            String messageCreatedAt = message.containsKey("created_at") ? (String) message.get("created_at") : "";
+                                            message1.setCreatedAt(messageCreatedAt);
+                                            String messageUpdatedAt = message.containsKey("updated_at") ? (String) message.get("updated_at") : "";
+                                            message1.setUpdatedAt(messageUpdatedAt);
+                                            String messageUsername = response.containsKey("username") ? (String) response.get("username") : "";
+                                            message1.setUsername(messageUsername);
+                                            messageMutableLiveData.postValue(message1);
+                                        }
+                                    }
+                                }
+                            } else {
+
+                            }
+                        }
+                    }
+//                    messageMutableLiveData.postValue(T);
+                }
+            }).build();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private MutableLiveData<Message> messageMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> _isLoading = new MutableLiveData<>();
     private MediatorLiveData<DeleteChatRoomResponse> deleteChatRoomResponseMediatorLiveData = new MediatorLiveData<>();
@@ -38,40 +113,11 @@ public class MainViewModel extends ViewModel {
     private MediatorLiveData<List<JoinedChatRoomResponse>> joinedChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<JoinChatRoomResponse> joinChatroomResponseMediatorLiveData = new MediatorLiveData<>();
 
+    public ConfigChatSocket getChatSocket() {
+        return chatSocket;
+    }
+
     void connectWebSocket() {
-        try {
-            Map<String, String> headers = new HashMap<>();
-            headers.put("Authorization", "bearer " + AppSharedPrefManager.getToken());
-            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel", new HashMap<String, String>()).headers(headers).addChatListener(new ConfigChatSocket.ChatCallback() {
-                @Override
-                public void onConnected() {
-                    //TODO: observ on connect
-                }
-
-                @Override
-                public void onDisConnected() {
-                    //TODO: observ on disconnect
-                }
-
-                @Override
-                public void onRejected() {
-                    //TODO: observ on reject
-                }
-
-                @Override
-                public void onFailed(Throwable t) {
-                    //TODO: observ on failed
-
-                }
-
-                @Override
-                public <T> void onReceived(T any) {
-//                    messageMutableLiveData.postValue(T);
-                }
-            }).build();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
         chatSocket.connect();
     }
 
