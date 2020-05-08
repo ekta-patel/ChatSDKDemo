@@ -18,7 +18,6 @@ import com.example.mychatlibrary.data.models.response.groupchat.GroupChatRespons
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GroupChatRoomsFragment extends BaseFragment<FragmentGroupChatBinding, GroupChatViewModel> implements RecyclerViewItemClickListener<GroupChatResponse> {
 
@@ -35,7 +34,7 @@ public class GroupChatRoomsFragment extends BaseFragment<FragmentGroupChatBindin
     @Override
     protected void initFragment() {
         navController = NavHostFragment.findNavController(GroupChatRoomsFragment.this);
-        this.activityViewModel = ((MainActivity) Objects.requireNonNull(getActivity())).getViewModel();
+        this.activityViewModel = ((MainActivity) requireActivity()).getViewModel();
         activityViewModel.getChatRooms();
         initAdapter();
         observeData();
@@ -44,7 +43,7 @@ public class GroupChatRoomsFragment extends BaseFragment<FragmentGroupChatBindin
     private void initAdapter() {
         responseList = new ArrayList<>();
         adapter = new GroupChatAdapter(responseList, this);
-        binding.rvAllGroupChat.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
+        binding.rvAllGroupChat.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
         binding.rvAllGroupChat.setAdapter(adapter);
     }
 

@@ -9,12 +9,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "http://13.235.232.157/";
+    private static final String BASE_URL = "http://13.235.232.157/api/v1/";
     private static Retrofit retrofit = null;
 
     private static synchronized Retrofit getClient() {
         if (retrofit == null) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             OkHttpClient client = new OkHttpClient.Builder()
                     .readTimeout(60, TimeUnit.SECONDS)

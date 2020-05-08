@@ -1,57 +1,31 @@
 package com.example.mychatlibrary.data.models.response.messages;
 
+import com.example.mychatlibrary.data.models.response.chatroom.ChatroomForMessages;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class MessagesResponseModel {
 
-    @SerializedName("success")
+    @SerializedName("status")
     @Expose
-    private boolean success;
-    @SerializedName("message")
+    private String status;
+    @SerializedName("chatroom")
     @Expose
-    private String message;
-    @SerializedName("data")
-    @Expose
-    private MessageResponseDataModel data;
-    //    @SerializedName("meta")
-//    @Expose
-//    private Meta meta;
-    @SerializedName("errors")
-    @Expose
-    private List<String> errors = null;
+    private ChatroomForMessages chatroom;
 
-    public boolean isSuccess() {
-        return success;
+    public String getStatus() {
+        return status;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public String getMessage() {
-        return message;
+    public ChatroomForMessages getChatroom() {
+        return chatroom;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public MessageResponseDataModel getData() {
-        return data;
-    }
-
-    public void setData(MessageResponseDataModel data) {
-        this.data = data;
-    }
-
-    public List<String> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(List<String> errors) {
-        this.errors = errors;
+    public void setChatroom(ChatroomForMessages chatroom) {
+        this.chatroom = chatroom;
     }
 }

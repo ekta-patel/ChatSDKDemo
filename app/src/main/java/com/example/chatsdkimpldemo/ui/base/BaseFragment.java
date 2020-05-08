@@ -1,6 +1,8 @@
 package com.example.chatsdkimpldemo.ui.base;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +57,31 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends ViewMode
     protected void dismissLoader() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+
+    protected void changeLightStatusBar(boolean hidden, Activity activity) {
+        if (hidden) {
+            setLightStatusBar(activity);
+        } else {
+            clearLightStatusBar(activity);
+        }
+    }
+
+    private void setLightStatusBar(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = activity.getWindow().getDecorView().getSystemUiVisibility();
+            flags = flags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            activity.getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
+    }
+
+    private void clearLightStatusBar(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = activity.getWindow().getDecorView().getSystemUiVisibility();
+            flags = flags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            activity.getWindow().getDecorView().setSystemUiVisibility(flags);
         }
     }
 }

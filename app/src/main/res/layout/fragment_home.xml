@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -7,16 +7,85 @@
         android:layout_height="match_parent"
         tools:context=".ui.home.HomeFragment">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewpager"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLineEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLineBegin"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.25" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="48dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toTopOf="@id/tvMessages"
+            app:layout_constraintStart_toEndOf="@id/guideLineBegin"
+            app:srcCompat="@drawable/ic_back" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            app:layout_constraintBottom_toBottomOf="@id/ivBack"
+            app:layout_constraintEnd_toStartOf="@id/guideLineEnd"
+            app:layout_constraintTop_toTopOf="@id/ivBack"
+            app:srcCompat="@drawable/ic_search" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="fitEnd"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/img_header" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvMessages"
+            style="@style/Header1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Messages"
+            app:layout_constraintBottom_toBottomOf="@id/img_background"
+            app:layout_constraintStart_toEndOf="@id/guideLineBegin" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideLineEnd"
+            app:layout_constraintStart_toEndOf="@id/guideLineBegin"
+            app:layout_constraintTop_toBottomOf="@id/guideline">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top" />
+                android:layout_gravity="top"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabIndicator="@null"
+                app:tabMode="scrollable"
+                app:tabRippleColor="@null"
+                app:tabSelectedTextColor="@android:color/white"
+                app:tabTextAppearance="@style/TabTextAppearance"
+                app:tabTextColor="#9d9d9d" />
 
         </androidx.viewpager.widget.ViewPager>
 

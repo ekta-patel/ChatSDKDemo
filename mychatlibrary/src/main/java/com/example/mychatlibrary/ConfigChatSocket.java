@@ -12,10 +12,10 @@ import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatr
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 import com.example.mychatlibrary.data.models.response.joinchatroom.JoinChatRoomResponse;
-import com.example.mychatlibrary.data.models.response.joinedgroups.JoinedChatRoomResponse;
+import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 import com.example.mychatlibrary.data.models.response.leavechatroom.LeaveChatroomResponse;
 import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
-import com.example.mychatlibrary.data.models.response.one2onechat.OneToOneChatResponse;
+import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
 
 import java.io.File;
 import java.net.URI;
@@ -35,13 +35,18 @@ public final class ConfigChatSocket {
     private ConfigChatSocket(Builder builder) throws URISyntaxException {
         this.builder = builder;
         this.apiHelper = ChatApiHelper.getInstance();
-        initConfig(builder.baseUrl, builder.headers);
+        initConfig(builder.baseUrl, builder.options, builder.headers);
     }
 
-    private void initConfig(String baseUrl, Map<String, String> options) throws URISyntaxException {
+    private void initConfig(String baseUrl, Map<String, String> options, Map<String, String> headers) throws URISyntaxException {
         URI uri = new URI(baseUrl);
         Consumer.Options consumerOptions = new Consumer.Options();
-        consumerOptions.getConnection().setHeaders(options);
+        if (options != null) {
+            consumerOptions.getConnection().setQuery(options);
+        }
+        if (headers != null) {
+            consumerOptions.getConnection().setHeaders(headers);
+        }
         _Consumer = ActionCable.INSTANCE.createConsumer(uri, consumerOptions);
     }
 
@@ -122,8 +127,8 @@ public final class ConfigChatSocket {
         return data;
     }
 
-    public MutableLiveData<OneToOneChatResponse> getOneToOneChatRooms() {
-        MediatorLiveData<OneToOneChatResponse> data = new MediatorLiveData<>();
+    public MutableLiveData<MyClassResponse> getOneToOneChatRooms() {
+        MediatorLiveData<MyClassResponse> data = new MediatorLiveData<>();
         data.addSource(apiHelper.getOneToOneChatRooms(), data::postValue);
         return data;
     }
@@ -146,8 +151,8 @@ public final class ConfigChatSocket {
         return data;
     }
 
-    public MutableLiveData<List<JoinedChatRoomResponse>> getJoinedChatRooms() {
-        MediatorLiveData<List<JoinedChatRoomResponse>> data = new MediatorLiveData<>();
+    public MutableLiveData<WebinarResponse> getJoinedChatRooms() {
+        MediatorLiveData<WebinarResponse> data = new MediatorLiveData<>();
         data.addSource(apiHelper.getJoinedChatRooms(), data::postValue);
         return data;
     }
@@ -164,13 +169,17 @@ public final class ConfigChatSocket {
         private String baseUrl;
         private String channelName;
         private Map<String, String> headers;
-        private Map<String, ?> options;
+        private Map<String, String> options;
         private ChatCallback callback;
 
-        public Builder(String baseUrl, String channelName, Map<String, ?> options) {
+        public Builder(String baseUrl, String channelName) {
             this.channelName = channelName;
             this.baseUrl = baseUrl;
+        }
+
+        public Builder query(Map<String, String> options) {
             this.options = options;
+            return this;
         }
 
         public Builder headers(Map<String, String> headers) {

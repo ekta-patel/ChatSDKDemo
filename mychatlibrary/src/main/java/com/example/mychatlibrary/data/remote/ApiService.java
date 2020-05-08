@@ -5,10 +5,10 @@ import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatr
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 import com.example.mychatlibrary.data.models.response.joinchatroom.JoinChatRoomResponse;
-import com.example.mychatlibrary.data.models.response.joinedgroups.JoinedChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.leavechatroom.LeaveChatroomResponse;
 import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
-import com.example.mychatlibrary.data.models.response.one2onechat.OneToOneChatResponse;
+import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
+import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public interface ApiService {
     Call<List<GroupChatResponse>> getGroupChatRooms();
 
     @GET("users")
-    Call<OneToOneChatResponse> getOneToOneChatRooms();
+    Call<MyClassResponse> getOneToOneChatRooms();
 
     @POST("chatrooms")
     Call<CreateChatroomResponse> createChatRoom(@Body CreateChatRoomRequest request);
@@ -34,7 +34,7 @@ public interface ApiService {
     Call<DeleteChatRoomResponse> deleteChatRoom(@Path("chatroomId") int chatRoomId);
 
     @GET("chatrooms/joins_channel")
-    Call<List<JoinedChatRoomResponse>> getJoinedChatRooms();
+    Call<WebinarResponse> getJoinedChatRooms();
 
     @POST("chatrooms/{chatroomId}/chatroom_users")
     Call<JoinChatRoomResponse> joinChatRoom(@Path("chatroomId") int chatroomId);

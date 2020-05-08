@@ -1,53 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout>
+
+    <data>
+
+        <variable
+            name="username"
+            type="String" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/bg_chat_screen"
+        android:fitsSystemWindows="true"
         tools:context=".ui.chatmain.MainChatFragment">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvMessages"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/tilMessage"
-            app:layout_constraintTop_toTopOf="parent"
-            app:stackFromEnd="true" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilMessage"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:hintEnabled="false"
-            app:layout_constraintBottom_toBottomOf="@id/fabSendMessage"
-            app:layout_constraintEnd_toStartOf="@id/fabSendMessage"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivBack"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/ivUser"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/fabSendMessage">
+            app:layout_constraintTop_toTopOf="@id/ivUser"
+            app:srcCompat="@drawable/ic_back_two" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tieMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="type something..." />
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/ivUser"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            app:imageUrl="@{username}"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintStart_toEndOf="@id/ivBack"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabSendMessage"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ivUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            android:src="@drawable/ic_send"
+            android:layout_marginStart="16dp"
+            android:text="@{username}"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:fontFamily="@font/montserrat_medium"
+            app:layout_constraintBottom_toBottomOf="@id/ivUser"
+            app:layout_constraintStart_toEndOf="@id/ivUser"
+            app:layout_constraintTop_toTopOf="@id/ivUser" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivMore"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_more" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.15" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CustomCardViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/guideline">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMessages"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toTopOf="@id/divider"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#ececec"
+                    app:layout_constraintBottom_toTopOf="@id/myBarrier" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/myBarrier"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="top"
+                    app:constraint_referenced_ids="btnSendMessage,etMessage" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/bg_et_message"
+                    android:elevation="4dp"
+                    android:hint="Type a message"
+                    android:paddingStart="32dp"
+                    android:paddingTop="16dp"
+                    android:paddingEnd="88dp"
+                    android:paddingBottom="16dp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#4a4a4a"
+                    android:textSize="14sp"
+                    app:fontFamily="@font/montserrat_regular"
+                    app:layout_constraintBottom_toBottomOf="@id/btnSendMessage"
+                    app:layout_constraintEnd_toStartOf="@id/btnSendMessage"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/btnSendMessage" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:elevation="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/etMessage"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintStart_toStartOf="@id/etMessage"
+                    app:layout_constraintTop_toTopOf="@id/etMessage"
+                    app:srcCompat="@drawable/ic_emojis" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivRecordAudio"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="4dp"
+                    android:elevation="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/etMessage"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintEnd_toEndOf="@id/etMessage"
+                    app:layout_constraintTop_toTopOf="@id/etMessage"
+                    app:srcCompat="@drawable/ic_record_audio" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivCamera"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="6dp"
+                    android:elevation="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/etMessage"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintEnd_toStartOf="@id/ivRecordAudio"
+                    app:layout_constraintTop_toTopOf="@id/etMessage"
+                    app:srcCompat="@drawable/ic_camera" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivAttachment"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="6dp"
+                    android:elevation="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/etMessage"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintEnd_toStartOf="@id/ivCamera"
+                    app:layout_constraintTop_toTopOf="@id/etMessage"
+                    app:srcCompat="@drawable/ic_attachment" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/btnSendMessage"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/tab_background_selected"
+                    android:elevation="4dp"
+                    android:padding="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:srcCompat="@drawable/ic_send" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

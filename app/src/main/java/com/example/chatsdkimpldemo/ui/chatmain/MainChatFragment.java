@@ -7,8 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -45,7 +43,8 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
     @Override
     protected void initFragment() {
         navController = NavHostFragment.findNavController(MainChatFragment.this);
-        this.activityViewModel = ((MainActivity) Objects.requireNonNull(getActivity())).getViewModel();
+        changeLightStatusBar(false, requireActivity());
+        this.activityViewModel = ((MainActivity) requireActivity()).getViewModel();
         this.chatSocket = activityViewModel.getChatSocket();
         if (getArguments() != null) {
             Bundle b = getArguments().getBundle("my_args");
@@ -59,17 +58,15 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                     mChatRoomId = b.getInt(Constants.BundleKeys.CHATROOM_ID);
                     activityViewModel.getUserMessages(mOtherUserId);
                 }
-                ActionBar actionbar = Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar());
-                actionbar.setDisplayHomeAsUpEnabled(true);
-                actionbar.setTitle(b.containsKey(Constants.BundleKeys.CHATROOM_NAME) ? b.getString(Constants.BundleKeys.CHATROOM_NAME) : getString(R.string.app_name));
+                binding.setUsername(b.containsKey(Constants.BundleKeys.CHATROOM_NAME) ? b.getString(Constants.BundleKeys.CHATROOM_NAME) : getString(R.string.app_name));
             }
         }
 
-        binding.fabSendMessage.setOnClickListener((v) -> {
-            String msg = Objects.requireNonNull(binding.tieMessage.getText()).toString();
+        binding.btnSendMessage.setOnClickListener((v) -> {
+            String msg = Objects.requireNonNull(binding.etMessage.getText()).toString();
             if (!TextUtils.isEmpty(msg)) {
                 chatSocket.sendMessage(1, msg, false, null);
-                binding.tieMessage.setText(null);
+                binding.etMessage.setText(null);
             }
         });
 
@@ -100,8 +97,8 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
         activityViewModel.getMessageResponseLiveData().observe(getViewLifecycleOwner(), res -> {
             if (res != null) {
                 this.messageList.clear();
-                if (res.getData().getMessageChatroom().getMessages() != null) {
-                    this.messageList.addAll(res.getData().getMessageChatroom().getMessages());
+                if (res.getChatroom().getMessages() != null) {
+                    this.messageList.addAll(res.getChatroom().getMessages());
                     adapter.notifyDataSetChanged();
                 }
             }

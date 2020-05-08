@@ -9,19 +9,20 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.chatsdkimpldemo.utils.Event;
 import com.example.mychatlibrary.ConfigChatSocket;
-import com.example.mychatlibrary.data.local.AppSharedPrefManager;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 import com.example.mychatlibrary.data.models.response.joinchatroom.JoinChatRoomResponse;
-import com.example.mychatlibrary.data.models.response.joinedgroups.JoinedChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.leavechatroom.LeaveChatroomResponse;
 import com.example.mychatlibrary.data.models.response.messages.Message;
 import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
-import com.example.mychatlibrary.data.models.response.one2onechat.OneToOneChatResponse;
+import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
+import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
+import com.example.mychatlibrary.utils.MD5;
 
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,14 @@ public class MainViewModel extends ViewModel {
 
     {
         try {
-            Map<String, String> headers = new HashMap<>();
-            headers.put("Authorization", "bearer " + AppSharedPrefManager.getToken());
-            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel", new HashMap<String, String>()).headers(headers).addChatListener(new ConfigChatSocket.ChatCallback() {
+            Map<String, String> options = new HashMap<>();
+            try {
+                options.put("login", "useremail@gmail.com");
+                options.put("password", MD5.getMd5("Tatva@123"));
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            chatSocket = new ConfigChatSocket.Builder("wss://13.235.232.157/cable", "ChatroomsChannel").query(options).addChatListener(new ConfigChatSocket.ChatCallback() {
                 @Override
                 public void onConnected() {
                     Log.e(TAG, "CONNECTED");
@@ -83,8 +89,8 @@ public class MainViewModel extends ViewModel {
                                             String messageUpdatedAt = message.containsKey("updated_at") ? (String) message.get("updated_at") : "";
                                             message1.setUpdatedAt(messageUpdatedAt);
                                             String messageUsername = response.containsKey("username") ? (String) response.get("username") : "";
-                                            message1.setUsername(messageUsername);
-                                            messageMutableLiveData.postValue(message1);
+//                                            message1.setUsername(messageUsername);
+//                                            messageMutableLiveData.postValue(message1);
                                         }
                                     }
                                 }
@@ -93,7 +99,6 @@ public class MainViewModel extends ViewModel {
                             }
                         }
                     }
-//                    messageMutableLiveData.postValue(T);
                 }
             }).build();
         } catch (URISyntaxException e) {
@@ -107,10 +112,10 @@ public class MainViewModel extends ViewModel {
     private MediatorLiveData<DeleteChatRoomResponse> deleteChatRoomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<LeaveChatroomResponse> leaveChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<MessagesResponseModel> messagesResponseModelMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<OneToOneChatResponse> getOneToOneChatRoomsMediatorLiveData = new MediatorLiveData<>();
+    private MediatorLiveData<MyClassResponse> getOneToOneChatRoomsMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<List<GroupChatResponse>> getGroupChatRoomsMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<Event<CreateChatroomResponse>> createChatroomResponseMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<List<JoinedChatRoomResponse>> joinedChatroomResponseMediatorLiveData = new MediatorLiveData<>();
+    private MediatorLiveData<WebinarResponse> joinedChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<JoinChatRoomResponse> joinChatroomResponseMediatorLiveData = new MediatorLiveData<>();
 
     public ConfigChatSocket getChatSocket() {
@@ -196,7 +201,7 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-    public LiveData<OneToOneChatResponse> getOneToOneChatResponseLiveData() {
+    public LiveData<MyClassResponse> getOneToOneChatResponseLiveData() {
         return getOneToOneChatRoomsMediatorLiveData;
     }
 
@@ -208,7 +213,7 @@ public class MainViewModel extends ViewModel {
         return createChatroomResponseMediatorLiveData;
     }
 
-    public LiveData<List<JoinedChatRoomResponse>> getJoinedChatRoomResponseLiveData() {
+    public LiveData<WebinarResponse> getJoinedChatRoomResponseLiveData() {
         return joinedChatroomResponseMediatorLiveData;
     }
 

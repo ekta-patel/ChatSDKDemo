@@ -3,31 +3,38 @@ package com.example.mychatlibrary.data.models.response.messages;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Objects;
-
 public class Message {
 
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("chatroom_id")
-    @Expose
-    private int chatroomId;
-    @SerializedName("user_id")
-    @Expose
-    private int userId;
-    @SerializedName("username")
-    @Expose
-    private String username;
     @SerializedName("body")
     @Expose
     private String body;
+    @SerializedName("chatroom_id")
+    @Expose
+    private int chatroomId;
+    @SerializedName("read_at")
+    @Expose
+    private String readAt;
+    @SerializedName("delete_in_seconds")
+    @Expose
+    private int deleteInSeconds;
+    @SerializedName("deleted_at")
+    @Expose
+    private String deletedAt;
+    @SerializedName("user_id")
+    @Expose
+    private int userId;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("attachment")
+    @Expose
+    private String attachment;
 
     public int getId() {
         return id;
@@ -35,6 +42,14 @@ public class Message {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public int getChatroomId() {
@@ -45,28 +60,36 @@ public class Message {
         this.chatroomId = chatroomId;
     }
 
+    public String getReadAt() {
+        return readAt;
+    }
+
+    public void setReadAt(String readAt) {
+        this.readAt = readAt;
+    }
+
+    public int getDeleteInSeconds() {
+        return deleteInSeconds;
+    }
+
+    public void setDeleteInSeconds(int deleteInSeconds) {
+        this.deleteInSeconds = deleteInSeconds;
+    }
+
+    public String getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(String deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
     public int getUserId() {
         return userId;
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
     }
 
     public String getCreatedAt() {
@@ -85,17 +108,11 @@ public class Message {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Message message = (Message) o;
-        return chatroomId == message.chatroomId &&
-                userId == message.userId;
+    public String getAttachment() {
+        return attachment;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(chatroomId, userId);
+    public void setAttachment(String attachment) {
+        this.attachment = attachment;
     }
 }
