@@ -50,9 +50,9 @@
             style="@style/MessageListTimeTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{message.updatedAt}"
             app:layout_constraintEnd_toEndOf="@id/messageSender"
-            app:layout_constraintTop_toBottomOf="@id/messageSender" />
+            app:layout_constraintTop_toBottomOf="@id/messageSender"
+            app:setTime="@{message.updatedAt}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

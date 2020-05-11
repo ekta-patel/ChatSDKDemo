@@ -18,6 +18,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     protected void initFragment() {
         setupTabAndPager();
         observeData();
+        binding.ivBack.setOnClickListener(v -> {
+
+        });
     }
 
     private void setupTabAndPager() {

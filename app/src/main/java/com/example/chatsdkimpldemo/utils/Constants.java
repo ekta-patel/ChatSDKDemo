@@ -7,6 +7,13 @@ public class Constants {
         public static final String CHATROOM_ID = "chatroom_id";
         public static final String CHATROOM_NAME = "chatroom_name";
         public static final String OTHER_USER_ID = "other_user_id";
+        public static final String OTHER_USER_NAME = "other_user_name";
+        public static final String SELECTED_USERS = "selected_users";
+    }
+
+    public static class RequestCodes {
+        public static final int OPEN_DOCUMENT = 1111;
+        public static final int OPEN_CAMERA = 1112;
     }
 
 }

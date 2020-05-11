@@ -44,8 +44,8 @@
             android:layout_marginStart="16dp"
             android:text="@{username}"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
-            app:fontFamily="@font/montserrat_medium"
+            android:textSize="16sp"
+            app:fontFamily="@font/montserrat_semibold"
             app:layout_constraintBottom_toBottomOf="@id/ivUser"
             app:layout_constraintStart_toEndOf="@id/ivUser"
             app:layout_constraintTop_toTopOf="@id/ivUser" />
@@ -112,7 +112,7 @@
                     android:background="@drawable/bg_et_message"
                     android:elevation="4dp"
                     android:hint="Type a message"
-                    android:paddingStart="32dp"
+                    android:paddingStart="36dp"
                     android:paddingTop="16dp"
                     android:paddingEnd="88dp"
                     android:paddingBottom="16dp"
@@ -128,7 +128,7 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="8dp"
                     android:elevation="4dp"
                     app:layout_constraintBottom_toBottomOf="@id/etMessage"
                     app:layout_constraintDimensionRatio="1"

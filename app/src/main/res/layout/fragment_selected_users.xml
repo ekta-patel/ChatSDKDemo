@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="size"
+            type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_chat_screen"
+        android:fitsSystemWindows="true">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivBack"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toTopOf="@id/cardView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back_two" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/ivUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="New Group"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:fontFamily="@font/montserrat_semibold"
+            app:layout_constraintBottom_toTopOf="@id/cardView"
+            app:layout_constraintStart_toEndOf="@id/ivBack"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="create"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            app:fontFamily="@font/montserrat_bold"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.15" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardView"
+            style="@style/CustomCardViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivGroup"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_avatar" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilGroupName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:errorIconDrawable="@null"
+                    app:hintTextColor="#9d9d9d"
+                    app:layout_constraintBottom_toBottomOf="@id/ivGroup"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivGroup"
+                    app:layout_constraintTop_toTopOf="@id/ivGroup">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tieGroupName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:hint="Group Name"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="#9d9d9d"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvGroupName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Please Provide Group Name and optional
+group icon"
+                    android:textColor="#4a4a4a"
+                    android:textSize="12sp"
+                    app:fontFamily="@font/montserrat_regular"
+                    app:layout_constraintEnd_toEndOf="@id/tilGroupName"
+                    app:layout_constraintStart_toStartOf="@id/tilGroupName"
+                    app:layout_constraintTop_toBottomOf="@id/ivGroup" />
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:background="#f4f4f4"
+                    app:layout_constraintTop_toBottomOf="@id/tvGroupName" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvParticipants"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Participants : "
+                    android:textColor="#4a4a4a"
+                    android:textSize="12sp"
+                    app:fontFamily="@font/montserrat_semibold"
+                    app:layout_constraintBottom_toBottomOf="@id/view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/view" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvParticipantsVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@{size.toString() + ` of 130`}"
+                    android:textColor="#4a4a4a"
+                    android:textSize="12sp"
+                    app:fontFamily="@font/montserrat_regular"
+                    app:layout_constraintBottom_toBottomOf="@id/view"
+                    app:layout_constraintStart_toEndOf="@id/tvParticipants"
+                    app:layout_constraintTop_toTopOf="@id/view" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSelectedUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view"
+                    app:spanCount="4" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

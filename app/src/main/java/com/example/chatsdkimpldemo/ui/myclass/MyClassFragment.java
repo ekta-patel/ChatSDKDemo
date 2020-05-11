@@ -1,5 +1,6 @@
 package com.example.chatsdkimpldemo.ui.myclass;
 
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.example.chatsdkimpldemo.R;
@@ -21,6 +22,7 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
     @Override
     protected void initFragment() {
         this.activityViewModel = ((MainActivity) requireActivity()).getViewModel();
+        binding.cardView.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_createChatroomFragment));
         initAdapter();
 
         observeData();
@@ -58,9 +60,9 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
             if (message != null) {
                 for (Chatroom x :
                         responseList) {
-                    if (x.getUser().getId() == message.getChatroomId() && x.getUser().getId() == message.getUserId()) {
+                    if (x.getId() == message.getChatroomId() && x.getUser().getId() == message.getUserId()) {
                         int index = responseList.indexOf(x);
-//                        x.setMessages(message);
+                        x.setMessages(message);
                         adapter.notifyItemChanged(index, x);
                     }
                 }

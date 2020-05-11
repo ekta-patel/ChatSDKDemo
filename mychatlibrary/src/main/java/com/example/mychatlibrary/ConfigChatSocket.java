@@ -12,10 +12,10 @@ import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatr
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 import com.example.mychatlibrary.data.models.response.joinchatroom.JoinChatRoomResponse;
-import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 import com.example.mychatlibrary.data.models.response.leavechatroom.LeaveChatroomResponse;
 import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
 import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
+import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 
 import java.io.File;
 import java.net.URI;
@@ -83,24 +83,22 @@ public final class ConfigChatSocket {
         _Consumer.connect();
     }
 
-    public void sendMessage(int channelId, String body, boolean hasMedia, File f) {
+    public void sendMessage(int channelId, String body) {
         Map<String, Object> map = new HashMap<>();
         map.put("body", body);
         map.put("channelId", channelId);
-        if (!hasMedia) {
-            subscriptionChat.perform("speak", map);
-        } else {
-//            subscriptionChat.perform(
-//                    "speak", mapOf(
-//                            "body"to"send msg from user 2 to chatroom:1",
-//                            "channelId"to 1,
-//                            "mime_type"to mimeType,
-//                            "file_extension"to extention,
-//                            "file_name"to logFileName.replace(extention, ""),
-//                            "file"to imageBytes
-//                    )
-//            );
-        }
+        subscriptionChat.perform("speak", map);
+    }
+
+    public void sendMediaMessage(int channelId, String body, File f, String mimeType, String extension, String fileName) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("body", body);
+        map.put("channelId", channelId);
+        map.put("file", f);
+        map.put("mime_type", mimeType);
+        map.put("file_extension", extension);
+        map.put("file_name", fileName);
+        subscriptionChat.perform("speak", map);
     }
 
     public MutableLiveData<MessagesResponseModel> getChatRoomMessages(int chatRoomId) {

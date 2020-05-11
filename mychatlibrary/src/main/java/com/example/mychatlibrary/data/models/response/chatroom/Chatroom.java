@@ -1,13 +1,17 @@
 package com.example.mychatlibrary.data.models.response.chatroom;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.example.mychatlibrary.data.models.response.messages.Message;
 import com.example.mychatlibrary.data.models.response.user.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Chatroom {
+public class Chatroom implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -130,4 +134,61 @@ public class Chatroom {
     public void setMessages(Message message) {
         this.message = message;
     }
+
+    protected Chatroom(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        directMessage = in.readByte() != 0x00;
+        if (in.readByte() == 0x01) {
+            userIds = new ArrayList<Integer>();
+            in.readList(userIds, Integer.class.getClassLoader());
+        } else {
+            userIds = null;
+        }
+        createdAt = in.readString();
+        updatedAt = in.readString();
+        lastMessage = in.readString();
+        user = (User) in.readValue(User.class.getClassLoader());
+        groupMember = in.readInt();
+        lastReadAt = in.readString();
+        message = (Message) in.readValue(Message.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeByte((byte) (directMessage ? 0x01 : 0x00));
+        if (userIds == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(userIds);
+        }
+        dest.writeString(createdAt);
+        dest.writeString(updatedAt);
+        dest.writeString(lastMessage);
+        dest.writeValue(user);
+        dest.writeInt(groupMember);
+        dest.writeString(lastReadAt);
+        dest.writeValue(message);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Chatroom> CREATOR = new Parcelable.Creator<Chatroom>() {
+        @Override
+        public Chatroom createFromParcel(Parcel in) {
+            return new Chatroom(in);
+        }
+
+        @Override
+        public Chatroom[] newArray(int size) {
+            return new Chatroom[size];
+        }
+    };
 }

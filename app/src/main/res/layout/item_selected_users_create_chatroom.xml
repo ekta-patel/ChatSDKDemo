@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.example.mychatlibrary.data.models.response.user.User" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/userProfile"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            app:imageUrl="@{user.username ?? user.email ?? user.phoneNumber}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivClose"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            app:layout_constraintEnd_toEndOf="@id/userProfile"
+            app:layout_constraintTop_toTopOf="@id/userProfile"
+            app:srcCompat="@drawable/ic_close" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/userName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{user.username ?? user.email ?? user.phoneNumber}"
+            app:layout_constraintEnd_toEndOf="@id/userProfile"
+            app:layout_constraintStart_toStartOf="@id/userProfile"
+            app:layout_constraintTop_toBottomOf="@id/userProfile"
+            app:layout_constraintWidth_max="wrap" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

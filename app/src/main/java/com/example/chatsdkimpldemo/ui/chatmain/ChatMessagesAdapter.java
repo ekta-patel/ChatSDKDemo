@@ -64,10 +64,9 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        if (messageList.get(position).getUserId() % 2 == 0) {
+        if (messageList.get(position).getUserId() == 3) {
             if (position != 0) {
-//                if (messageList.get(position).getUserId() == messageList.get(position - 1).getUserId()) {
-                if (messageList.get(position - 1).getUserId() % 2 == 0) {
+                if (messageList.get(position - 1).getUserId() == 3) {
                     return SENDER_TYPE2;
                 } else {
                     return SENDER_TYPE1;
@@ -77,8 +76,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         } else {
             if (position != 0) {
-//                if (messageList.get(position).getUserId() % 2 == messageList.get(position - 1).getUserId()) {
-                if (messageList.get(position - 1).getUserId() % 2 != 0) {
+                if (messageList.get(position - 1).getUserId() != 3) {
                     return RECEIVER_TYPE2;
                 } else {
                     return RECEIVER_TYPE1;

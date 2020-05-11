@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onDestroy() {
         viewModel.disconnectWebSocket();
-        super.onBackPressed();
+        super.onDestroy();
     }
 
     public MainViewModel getViewModel() {

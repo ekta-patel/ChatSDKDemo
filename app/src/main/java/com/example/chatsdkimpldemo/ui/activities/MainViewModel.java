@@ -7,7 +7,6 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.chatsdkimpldemo.utils.Event;
 import com.example.mychatlibrary.ConfigChatSocket;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
@@ -42,7 +41,7 @@ public class MainViewModel extends ViewModel {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-            chatSocket = new ConfigChatSocket.Builder("wss://13.235.232.157/cable", "ChatroomsChannel").query(options).addChatListener(new ConfigChatSocket.ChatCallback() {
+            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel").query(options).addChatListener(new ConfigChatSocket.ChatCallback() {
                 @Override
                 public void onConnected() {
                     Log.e(TAG, "CONNECTED");
@@ -65,33 +64,36 @@ public class MainViewModel extends ViewModel {
 
                 @Override
                 public <T> void onReceived(T any) {
-                    Log.e(TAG, "RECEIVED");
+                    Log.e(TAG, "RECEIVED" + any.toString());
                     if (any instanceof Map) {
                         Map response = (Map) any;
-                        if (response.containsKey("success")) {
-                            if ((boolean) response.get("success")) {
+                        if (response.containsKey("event")) {
+                            if (Objects.requireNonNull(response.get("event")).equals("created")) {
                                 if (response.containsKey("data")) {
-                                    Map mainResponse = (Map) response.get("data");
-                                    if (Objects.requireNonNull(mainResponse).containsKey("messages")) {
-                                        Map message = (Map) mainResponse.get("messages");
-                                        if (message != null) {
-                                            Message message1 = new Message();
-                                            int messageId = message.containsKey("id") ? Objects.requireNonNull((Double) message.get("id")).intValue() : -1;
-                                            message1.setId(messageId);
-                                            int messageChatroomId = message.containsKey("chatroom_id") ? ((Double) Objects.requireNonNull(message.get("chatroom_id"))).intValue() : -1;
-                                            message1.setChatroomId(messageChatroomId);
-                                            int messageUserId = message.containsKey("user_id") ? Objects.requireNonNull((Double) message.get("user_id")).intValue() : -1;
-                                            message1.setUserId(messageUserId);
-                                            String messageBody = message.containsKey("body") ? (String) message.get("body") : "";
-                                            message1.setBody(messageBody);
-                                            String messageCreatedAt = message.containsKey("created_at") ? (String) message.get("created_at") : "";
-                                            message1.setCreatedAt(messageCreatedAt);
-                                            String messageUpdatedAt = message.containsKey("updated_at") ? (String) message.get("updated_at") : "";
-                                            message1.setUpdatedAt(messageUpdatedAt);
-                                            String messageUsername = response.containsKey("username") ? (String) response.get("username") : "";
-//                                            message1.setUsername(messageUsername);
-//                                            messageMutableLiveData.postValue(message1);
-                                        }
+                                    Map message = (Map) response.get("data");
+                                    if (message != null) {
+                                        Message message1 = new Message();
+                                        int messageId = message.containsKey("id") ? Objects.requireNonNull((Double) message.get("id")).intValue() : -1;
+                                        message1.setId(messageId);
+                                        String messageBody = message.containsKey("body") ? (String) message.get("body") : "";
+                                        message1.setBody(messageBody);
+                                        int messageChatroomId = message.containsKey("chatroom_id") ? ((Double) Objects.requireNonNull(message.get("chatroom_id"))).intValue() : -1;
+                                        message1.setChatroomId(messageChatroomId);
+                                        String readAt = message.containsKey("read_at") ? ((String) message.get("read_at")) : "";
+                                        message1.setReadAt(readAt);
+                                        int deleteInSeconds = message.containsKey("delete_in_seconds") ? ((Double) Objects.requireNonNull(message.get("delete_in_seconds"))).intValue() : -1;
+                                        message1.setDeleteInSeconds(deleteInSeconds);
+                                        String deletedAt = message.containsKey("deleted_at") ? ((String) message.get("deleted_at")) : "";
+                                        message1.setDeletedAt(deletedAt);
+                                        int messageUserId = message.containsKey("user_id") ? Objects.requireNonNull(((Double) message.get("user_id"))).intValue() : -1;
+                                        message1.setUserId(messageUserId);
+                                        String messageCreatedAt = message.containsKey("created_at") ? (String) message.get("created_at") : "";
+                                        message1.setCreatedAt(messageCreatedAt);
+                                        String messageUpdatedAt = message.containsKey("updated_at") ? (String) message.get("updated_at") : "";
+                                        message1.setUpdatedAt(messageUpdatedAt);
+                                        String attachment = message.containsKey("attachment") ? (String) message.get("attachment") : "";
+                                        message1.setAttachment(attachment);
+                                        messageMutableLiveData.postValue(message1);
                                     }
                                 }
                             } else {
@@ -101,9 +103,11 @@ public class MainViewModel extends ViewModel {
                     }
                 }
             }).build();
-        } catch (URISyntaxException e) {
+        } catch (
+                URISyntaxException e) {
             e.printStackTrace();
         }
+
     }
 
 
@@ -114,7 +118,7 @@ public class MainViewModel extends ViewModel {
     private MediatorLiveData<MessagesResponseModel> messagesResponseModelMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<MyClassResponse> getOneToOneChatRoomsMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<List<GroupChatResponse>> getGroupChatRoomsMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<Event<CreateChatroomResponse>> createChatroomResponseMediatorLiveData = new MediatorLiveData<>();
+    private MediatorLiveData<CreateChatroomResponse> createChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<WebinarResponse> joinedChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<JoinChatRoomResponse> joinChatroomResponseMediatorLiveData = new MediatorLiveData<>();
 
@@ -181,7 +185,7 @@ public class MainViewModel extends ViewModel {
         _isLoading.postValue(true);
         createChatroomResponseMediatorLiveData.addSource(chatSocket.createChatRoom(request), response -> {
             _isLoading.postValue(false);
-            createChatroomResponseMediatorLiveData.postValue(new Event<CreateChatroomResponse>(response));
+            createChatroomResponseMediatorLiveData.postValue(response);
         });
     }
 
@@ -209,7 +213,7 @@ public class MainViewModel extends ViewModel {
         return getGroupChatRoomsMediatorLiveData;
     }
 
-    public LiveData<Event<CreateChatroomResponse>> getCreateChatRoomResponseLiveData() {
+    public LiveData<CreateChatroomResponse> getCreateChatRoomResponseLiveData() {
         return createChatroomResponseMediatorLiveData;
     }
 

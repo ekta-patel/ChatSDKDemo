@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
+
 public abstract class BaseFragment<T extends ViewDataBinding, V extends ViewModel> extends Fragment {
 
     protected T binding;
@@ -60,6 +62,9 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends ViewMode
         }
     }
 
+    protected void showSnackbar(String message) {
+        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+    }
 
     protected void changeLightStatusBar(boolean hidden, Activity activity) {
         if (hidden) {

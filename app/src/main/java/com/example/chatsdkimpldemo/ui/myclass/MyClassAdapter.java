@@ -66,9 +66,10 @@ public class MyClassAdapter extends RecyclerView.Adapter<MyClassAdapter.ViewHold
             Bundle bundle = new Bundle();
             bundle.putBoolean(Constants.BundleKeys.IS_GROUP, false);
             User u = binding.getChatroom().getUser();
+            bundle.putInt(Constants.BundleKeys.CHATROOM_ID, binding.getChatroom().getId());
             bundle.putInt(Constants.BundleKeys.OTHER_USER_ID, u.getId());
             String name = TextUtils.isEmpty(u.getUsername()) ? (TextUtils.isEmpty(u.getEmail()) ? u.getPhoneNumber() : u.getEmail()) : u.getUsername();
-            bundle.putString(Constants.BundleKeys.CHATROOM_NAME, name);
+            bundle.putString(Constants.BundleKeys.OTHER_USER_NAME, name);
             NavDirections directions = HomeFragmentDirections.actionHomeFragmentToMainChatFragment(bundle);
             Navigation.findNavController(v).navigate(directions);
         }

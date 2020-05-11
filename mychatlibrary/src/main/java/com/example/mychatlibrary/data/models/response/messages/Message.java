@@ -1,9 +1,12 @@
 package com.example.mychatlibrary.data.models.response.messages;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Message {
+public class Message implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -115,4 +118,52 @@ public class Message {
     public void setAttachment(String attachment) {
         this.attachment = attachment;
     }
+
+    public Message() {
+    }
+
+    protected Message(Parcel in) {
+        id = in.readInt();
+        body = in.readString();
+        chatroomId = in.readInt();
+        readAt = in.readString();
+        deleteInSeconds = in.readInt();
+        deletedAt = in.readString();
+        userId = in.readInt();
+        createdAt = in.readString();
+        updatedAt = in.readString();
+        attachment = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(body);
+        dest.writeInt(chatroomId);
+        dest.writeString(readAt);
+        dest.writeInt(deleteInSeconds);
+        dest.writeString(deletedAt);
+        dest.writeInt(userId);
+        dest.writeString(createdAt);
+        dest.writeString(updatedAt);
+        dest.writeString(attachment);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Message> CREATOR = new Parcelable.Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
 }

@@ -1,5 +1,6 @@
 package com.example.mychatlibrary.data.models.response.createchatroom;
 
+import com.example.mychatlibrary.data.models.response.chatroom.ChatroomForMessages;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,12 +9,9 @@ public class CreateChatroomResponse {
     @SerializedName("status")
     @Expose
     private String status;
-    @SerializedName("message")
+    @SerializedName("chatroom")
     @Expose
-    private String message;
-    @SerializedName("html")
-    @Expose
-    private String html;
+    private ChatroomForMessages chatroom;
 
     public String getStatus() {
         return status;
@@ -23,19 +21,11 @@ public class CreateChatroomResponse {
         this.status = status;
     }
 
-    public String getMessage() {
-        return message;
+    public ChatroomForMessages getChatroom() {
+        return chatroom;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getHtml() {
-        return html;
-    }
-
-    public void setHtml(String html) {
-        this.html = html;
+    public void setChatroom(ChatroomForMessages chatroom) {
+        this.chatroom = chatroom;
     }
 }

@@ -7,13 +7,13 @@ public class CreateChatRoomRequest {
 
     @SerializedName("chatroom")
     @Expose
-    private Chatroom chatroom;
+    private CreateChatRoomDataRequest chatRoomDataRequest;
 
-    public Chatroom getChatroom() {
-        return chatroom;
+    public CreateChatRoomDataRequest getChatRoomDataRequest() {
+        return chatRoomDataRequest;
     }
 
-    public void setChatroom(Chatroom chatroom) {
-        this.chatroom = chatroom;
+    public void setChatRoomDataRequest(CreateChatRoomDataRequest chatRoomDataRequest) {
+        this.chatRoomDataRequest = chatRoomDataRequest;
     }
 }

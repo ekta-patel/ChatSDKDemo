@@ -24,6 +24,9 @@
                 android:name="my_args"
                 app:argType="android.os.Bundle" />
         </action>
+        <action
+            android:id="@+id/action_homeFragment_to_createChatroomFragment"
+            app:destination="@id/createChatroomFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainChatFragment"
@@ -33,4 +36,20 @@
         android:id="@+id/groupChatRoomsFragment"
         android:name="com.example.chatsdkimpldemo.ui.chatrooms.all.GroupChatRoomsFragment"
         android:label="GroupChatRoomsFragment" />
+    <fragment
+        android:id="@+id/createChatroomFragment"
+        android:name="com.example.chatsdkimpldemo.ui.createchatroom.selectuser.SelectUsersFragment"
+        android:label="CreateChatroomFragment" >
+        <action
+            android:id="@+id/action_createChatroomFragment_to_createChatroomNameFragment"
+            app:destination="@id/createChatroomNameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createChatroomNameFragment"
+        android:name="com.example.chatsdkimpldemo.ui.createchatroom.create.SelectedUsersFragment"
+        android:label="CreateChatroomNameFragment" >
+        <action
+            android:id="@+id/action_createChatroomNameFragment_to_mainChatFragment"
+            app:destination="@id/mainChatFragment" />
+    </fragment>
 </navigation>
