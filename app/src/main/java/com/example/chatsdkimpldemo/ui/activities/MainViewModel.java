@@ -14,18 +14,22 @@ import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatR
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 import com.example.mychatlibrary.data.models.response.joinchatroom.JoinChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.leavechatroom.LeaveChatroomResponse;
+import com.example.mychatlibrary.data.models.response.messages.MediaMessageResponse;
 import com.example.mychatlibrary.data.models.response.messages.Message;
 import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
 import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
 import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 import com.example.mychatlibrary.utils.MD5;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import okhttp3.MediaType;
 
 public class MainViewModel extends ViewModel {
 
@@ -121,6 +125,7 @@ public class MainViewModel extends ViewModel {
     private MediatorLiveData<CreateChatroomResponse> createChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<WebinarResponse> joinedChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<JoinChatRoomResponse> joinChatroomResponseMediatorLiveData = new MediatorLiveData<>();
+    private MediatorLiveData<MediaMessageResponse> mediaMessageResponseMediatorLiveData = new MediatorLiveData<>();
 
     public ConfigChatSocket getChatSocket() {
         return chatSocket;
@@ -205,6 +210,12 @@ public class MainViewModel extends ViewModel {
         });
     }
 
+    public void sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
+        getOneToOneChatRoomsMediatorLiveData.addSource(chatSocket.sendMediaMessage(chatroomId, f, mediaType), response -> {
+            mediaMessageResponseMediatorLiveData.postValue(response);
+        });
+    }
+
     public LiveData<MyClassResponse> getOneToOneChatResponseLiveData() {
         return getOneToOneChatRoomsMediatorLiveData;
     }
@@ -241,8 +252,12 @@ public class MainViewModel extends ViewModel {
         return _isLoading;
     }
 
-    public MutableLiveData<Message> getMessageMutableLiveData() {
+    public LiveData<Message> getMessageMutableLiveData() {
         return messageMutableLiveData;
+    }
+
+    public LiveData<MediaMessageResponse> getMediaMessageResponseMediatorLiveData() {
+        return mediaMessageResponseMediatorLiveData;
     }
 
 }

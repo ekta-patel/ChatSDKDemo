@@ -60,7 +60,7 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
             if (message != null) {
                 for (Chatroom x :
                         responseList) {
-                    if (x.getId() == message.getChatroomId() && x.getUser().getId() == message.getUserId()) {
+                    if (x.getId() == message.getChatroomId()) {
                         int index = responseList.indexOf(x);
                         x.setMessages(message);
                         adapter.notifyItemChanged(index, x);

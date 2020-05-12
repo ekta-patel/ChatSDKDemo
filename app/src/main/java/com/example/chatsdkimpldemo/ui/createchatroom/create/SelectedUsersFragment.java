@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
@@ -101,7 +102,8 @@ public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBin
                 bundle.putBoolean(Constants.BundleKeys.IS_GROUP, true);
                 bundle.putInt(Constants.BundleKeys.CHATROOM_ID, res.getChatroom().getId());
                 bundle.putString(Constants.BundleKeys.CHATROOM_NAME, res.getChatroom().getName());
-                navController.navigate(R.id.action_createChatroomNameFragment_to_mainChatFragment, new Bundle(), options);
+                NavDirections directions = SelectedUsersFragmentDirections.actionCreateChatroomNameFragmentToMainChatFragment(bundle);
+                navController.navigate(directions, options);
             }
         });
         activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {

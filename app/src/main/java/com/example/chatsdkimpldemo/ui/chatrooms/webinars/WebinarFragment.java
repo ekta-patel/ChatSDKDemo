@@ -10,6 +10,7 @@ import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
 import com.example.chatsdkimpldemo.ui.chatrooms.GroupChatViewModel;
+import com.example.mychatlibrary.data.models.response.chatroom.Chatroom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +67,14 @@ public class WebinarFragment extends BaseFragment<FragmentWebinarBinding, GroupC
         });
         activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
             if (message != null) {
-//                    responseList.add(message);
-                adapter.notifyItemInserted(adapter.getItemCount());
+                for (Chatroom x :
+                        responseList) {
+                    if (x.getId() == message.getChatroomId()) {
+                        int index = responseList.indexOf(x);
+                        x.setMessages(message);
+                        adapter.notifyItemChanged(index, x);
+                    }
+                }
             }
         });
     }

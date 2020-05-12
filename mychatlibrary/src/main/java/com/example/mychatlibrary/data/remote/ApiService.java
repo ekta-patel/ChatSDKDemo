@@ -6,17 +6,21 @@ import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatR
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 import com.example.mychatlibrary.data.models.response.joinchatroom.JoinChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.leavechatroom.LeaveChatroomResponse;
+import com.example.mychatlibrary.data.models.response.messages.MediaMessageResponse;
 import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
 import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
 import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -47,4 +51,9 @@ public interface ApiService {
 
     @GET("direct_messages/{userId}")
     Call<MessagesResponseModel> getUserMessages(@Path("userId") int userId);
+
+    @Multipart
+    @POST("chatrooms/{chatroomId}/messages")
+    Call<MediaMessageResponse> sendMediaMessage(@Path("chatroomId") int chatRoomId,
+                                                @Part MultipartBody.Part file);
 }

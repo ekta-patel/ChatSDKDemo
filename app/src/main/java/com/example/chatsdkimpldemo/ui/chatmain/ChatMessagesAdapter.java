@@ -1,5 +1,6 @@
 package com.example.chatsdkimpldemo.ui.chatmain;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -8,8 +9,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatsdkimpldemo.R;
+import com.example.chatsdkimpldemo.databinding.ItemReceiveMediaBinding;
+import com.example.chatsdkimpldemo.databinding.ItemReceiveMediaTwoBinding;
 import com.example.chatsdkimpldemo.databinding.ItemReceiveMessageBinding;
 import com.example.chatsdkimpldemo.databinding.ItemReceiveMessageTwoBinding;
+import com.example.chatsdkimpldemo.databinding.ItemSenderMediaBinding;
+import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTwoBinding;
 import com.example.chatsdkimpldemo.databinding.ItemSenderMessageBinding;
 import com.example.chatsdkimpldemo.databinding.ItemSenderMessageTwoBinding;
 import com.example.mychatlibrary.data.models.response.messages.Message;
@@ -22,6 +27,10 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int SENDER_TYPE2 = 2;
     private static final int RECEIVER_TYPE1 = 3;
     private static final int RECEIVER_TYPE2 = 4;
+    private static final int SENDER_MEDIA_TYPE1 = 5;
+    private static final int SENDER_MEDIA_TYPE2 = 6;
+    private static final int RECEIVER_MEDIA_TYPE1 = 7;
+    private static final int RECEIVER_MEDIA_TYPE2 = 8;
 
     private List<Message> messageList;
 
@@ -46,6 +55,18 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             default:
                 ItemReceiveMessageTwoBinding receiver2MessageBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receive_message_two, parent, false);
                 return new Receiver2ViewHolder(receiver2MessageBinding);
+            case SENDER_MEDIA_TYPE1:
+                ItemSenderMediaBinding senderMediaBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media, parent, false);
+                return new SenderMediaViewHolder(senderMediaBinding);
+            case RECEIVER_MEDIA_TYPE1:
+                ItemReceiveMediaBinding receiverMediaBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receive_media, parent, false);
+                return new ReceiverMediaViewHolder(receiverMediaBinding);
+            case SENDER_MEDIA_TYPE2:
+                ItemSenderMediaTwoBinding senderMedia2MessageBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_two, parent, false);
+                return new SenderMedia2ViewHolder(senderMedia2MessageBinding);
+            case RECEIVER_MEDIA_TYPE2:
+                ItemReceiveMediaTwoBinding receiverMedia2MessageBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receive_media_two, parent, false);
+                return new ReceiverMedia2ViewHolder(receiverMedia2MessageBinding);
         }
     }
 
@@ -59,30 +80,63 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((Sender2ViewHolder) holder).bind(messageList.get(position));
         } else if (holder instanceof Receiver2ViewHolder) {
             ((Receiver2ViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof SenderMediaViewHolder) {
+            ((SenderMediaViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof ReceiverMediaViewHolder) {
+            ((ReceiverMediaViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof SenderMedia2ViewHolder) {
+            ((SenderMedia2ViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof ReceiverMedia2ViewHolder) {
+            ((ReceiverMedia2ViewHolder) holder).bind(messageList.get(position));
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (messageList.get(position).getUserId() == 3) {
-            if (position != 0) {
-                if (messageList.get(position - 1).getUserId() == 3) {
-                    return SENDER_TYPE2;
+        Message m = messageList.get(position);
+        if (m.getUserId() == 3) {
+            if (TextUtils.isEmpty(m.getAttachment())) {
+                if (position != 0) {
+                    if (messageList.get(position - 1).getUserId() == 3) {
+                        return SENDER_TYPE2;
+                    } else {
+                        return SENDER_TYPE1;
+                    }
                 } else {
                     return SENDER_TYPE1;
                 }
             } else {
-                return SENDER_TYPE1;
+                if (position != 0) {
+                    if (messageList.get(position - 1).getUserId() == 3) {
+                        return SENDER_MEDIA_TYPE2;
+                    } else {
+                        return SENDER_MEDIA_TYPE1;
+                    }
+                } else {
+                    return SENDER_MEDIA_TYPE1;
+                }
             }
         } else {
-            if (position != 0) {
-                if (messageList.get(position - 1).getUserId() != 3) {
-                    return RECEIVER_TYPE2;
+            if (TextUtils.isEmpty(m.getAttachment())) {
+                if (position != 0) {
+                    if (messageList.get(position - 1).getUserId() != 3) {
+                        return RECEIVER_TYPE2;
+                    } else {
+                        return RECEIVER_TYPE1;
+                    }
                 } else {
                     return RECEIVER_TYPE1;
                 }
             } else {
-                return RECEIVER_TYPE1;
+                if (position != 0) {
+                    if (messageList.get(position - 1).getUserId() != 3) {
+                        return RECEIVER_MEDIA_TYPE2;
+                    } else {
+                        return RECEIVER_MEDIA_TYPE1;
+                    }
+                } else {
+                    return RECEIVER_MEDIA_TYPE1;
+                }
             }
         }
     }
@@ -148,6 +202,65 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         void bind(Message m) {
             senderMessageBinding.setMessage(m);
             senderMessageBinding.executePendingBindings();
+        }
+    }
+
+    static class SenderMediaViewHolder extends RecyclerView.ViewHolder {
+        private ItemSenderMediaBinding senderMediaBinding;
+
+        SenderMediaViewHolder(ItemSenderMediaBinding senderMediaBinding) {
+            super(senderMediaBinding.getRoot());
+            this.senderMediaBinding = senderMediaBinding;
+        }
+
+        void bind(Message m) {
+            senderMediaBinding.setMessage(m);
+            senderMediaBinding.executePendingBindings();
+        }
+    }
+
+    static class ReceiverMediaViewHolder extends RecyclerView.ViewHolder {
+
+        private ItemReceiveMediaBinding receiveMediaBinding;
+
+        ReceiverMediaViewHolder(ItemReceiveMediaBinding receiveMediaBinding) {
+            super(receiveMediaBinding.getRoot());
+            this.receiveMediaBinding = receiveMediaBinding;
+        }
+
+        void bind(Message m) {
+            receiveMediaBinding.setMessage(m);
+            receiveMediaBinding.executePendingBindings();
+        }
+    }
+
+    static class ReceiverMedia2ViewHolder extends RecyclerView.ViewHolder {
+
+        private ItemReceiveMediaTwoBinding receiveMediaBinding;
+
+        ReceiverMedia2ViewHolder(ItemReceiveMediaTwoBinding receiveMediaBinding) {
+            super(receiveMediaBinding.getRoot());
+            this.receiveMediaBinding = receiveMediaBinding;
+        }
+
+        void bind(Message m) {
+            receiveMediaBinding.setMessage(m);
+            receiveMediaBinding.executePendingBindings();
+        }
+    }
+
+
+    static class SenderMedia2ViewHolder extends RecyclerView.ViewHolder {
+        private ItemSenderMediaTwoBinding senderMediaBinding;
+
+        SenderMedia2ViewHolder(ItemSenderMediaTwoBinding senderMediaBinding) {
+            super(senderMediaBinding.getRoot());
+            this.senderMediaBinding = senderMediaBinding;
+        }
+
+        void bind(Message m) {
+            senderMediaBinding.setMessage(m);
+            senderMediaBinding.executePendingBindings();
         }
     }
 

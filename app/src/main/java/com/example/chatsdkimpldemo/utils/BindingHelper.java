@@ -1,6 +1,8 @@
 package com.example.chatsdkimpldemo.utils;
 
 
+import android.text.TextUtils;
+
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.databinding.BindingAdapter;
 
@@ -14,7 +16,12 @@ public class BindingHelper {
 
     @BindingAdapter({"imageUrl"})
     public static void loadImage(SimpleDraweeView view, String imageUrl) {
-        view.setImageURI("https://cdn.clipart.email/34ef97566964eb0d43fa11c929d00f2c_avatar-pic-circle-png-picture-401512-avatar-pic-circle-png_512-512.png");
+        if (TextUtils.isEmpty(imageUrl)) {
+            view.setImageURI("https://cdn.clipart.email/34ef97566964eb0d43fa11c929d00f2c_avatar-pic-circle-png-picture-401512-avatar-pic-circle-png_512-512.png");
+        } else {
+            String x = "http://13.235.232.157" + imageUrl;
+            view.setImageURI(x);
+        }
     }
 
     @BindingAdapter({"setTime"})

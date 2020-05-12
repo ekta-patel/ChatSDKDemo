@@ -13,6 +13,7 @@ import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatR
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 import com.example.mychatlibrary.data.models.response.joinchatroom.JoinChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.leavechatroom.LeaveChatroomResponse;
+import com.example.mychatlibrary.data.models.response.messages.MediaMessageResponse;
 import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
 import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
 import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
@@ -23,6 +24,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.MediaType;
 
 public final class ConfigChatSocket {
 
@@ -152,6 +155,12 @@ public final class ConfigChatSocket {
     public MutableLiveData<WebinarResponse> getJoinedChatRooms() {
         MediatorLiveData<WebinarResponse> data = new MediatorLiveData<>();
         data.addSource(apiHelper.getJoinedChatRooms(), data::postValue);
+        return data;
+    }
+
+    public MutableLiveData<MediaMessageResponse> sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
+        MediatorLiveData<MediaMessageResponse> data = new MediatorLiveData<>();
+        data.addSource(apiHelper.sendMediaMessage(chatroomId, f, mediaType), data::postValue);
         return data;
     }
 
