@@ -18,9 +18,9 @@
             android:id="@+id/ivUser"
             android:layout_width="54dp"
             android:layout_height="54dp"
-            app:imageUrl="@{chatroom.user.username}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:loadProfile="@{chatroom.id}" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvUserName"
@@ -41,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@{chatroom.lastMessage}"
+            android:text="@{chatroom.messages.body}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivUser"

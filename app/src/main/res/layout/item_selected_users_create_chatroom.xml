@@ -16,10 +16,10 @@
             android:id="@+id/userProfile"
             android:layout_width="54dp"
             android:layout_height="54dp"
-            app:imageUrl="@{user.username ?? user.email ?? user.phoneNumber}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:loadProfile="@{user.id}" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivClose"
