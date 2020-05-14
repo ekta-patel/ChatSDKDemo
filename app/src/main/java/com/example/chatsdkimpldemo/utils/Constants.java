@@ -1,6 +1,6 @@
 package com.example.chatsdkimpldemo.utils;
 
-public class Constants {
+public final class Constants {
 
     public static class BundleKeys {
         public static final String IS_GROUP = "is_group";
@@ -19,6 +19,48 @@ public class Constants {
 
     public static class PermissionCodes {
         public static final int RECORD_AUDIO = 1000;
+        public static final int WRITE_EXTERNAL_STORAGE = 1001;
+    }
+
+    public enum MediaIdentifier {
+
+        IMAGE("image"),
+        VIDEO("video"),
+        AUDIO("audio");
+        private String value;
+
+        MediaIdentifier(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum ViewHolderIdentifier {
+        SENDER_TYPE1(1),
+        SENDER_TYPE2(2),
+        RECEIVER_TYPE1(3),
+        RECEIVER_TYPE2(4),
+        SENDER_MEDIA_TYPE1(5),
+        SENDER_MEDIA_TYPE2(6),
+        RECEIVER_MEDIA_TYPE1(7),
+        RECEIVER_MEDIA_TYPE2(8),
+        SENDER_MEDIA_DOCTYPE1(9),
+        SENDER_MEDIA_DOCTYPE2(10),
+        RECEIVER_MEDIA_DOCTYPE1(11),
+        RECEIVER_MEDIA_DOCTYPE2(12);
+
+        private int value;
+
+        ViewHolderIdentifier(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
 }

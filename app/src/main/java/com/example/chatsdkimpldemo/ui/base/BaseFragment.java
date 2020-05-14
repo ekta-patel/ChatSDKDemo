@@ -63,7 +63,7 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends ViewMode
     }
 
     protected void showSnackbar(String message) {
-        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
     }
 
     protected void changeLightStatusBar(boolean hidden, Activity activity) {

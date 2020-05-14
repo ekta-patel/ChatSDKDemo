@@ -34,13 +34,9 @@ public class WebinarFragment extends BaseFragment<FragmentWebinarBinding, GroupC
         binding.btnViewChatRoom.setOnClickListener((v) -> navController.navigate(R.id.groupChatRoomsFragment));
         initAdapter();
 
-        observeData();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         activityViewModel.getJoinedChatRooms();
+
+        observeData();
     }
 
     private void initAdapter() {
@@ -52,11 +48,12 @@ public class WebinarFragment extends BaseFragment<FragmentWebinarBinding, GroupC
 
     private void observeData() {
         activityViewModel.getJoinedChatRoomResponseLiveData().observe(getViewLifecycleOwner(), resList -> {
-            if (resList != null) {
-                this.responseList.clear();
-                this.responseList.addAll(resList.getChatrooms());
-                adapter.notifyDataSetChanged();
-            }
+            this.responseList.clear();
+            this.responseList.addAll(resList.getChatrooms());
+            adapter.notifyDataSetChanged();
+        });
+        activityViewModel.getError().observe(getViewLifecycleOwner(), e -> {
+            showSnackbar(e.getMessage());
         });
         activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
@@ -71,7 +68,7 @@ public class WebinarFragment extends BaseFragment<FragmentWebinarBinding, GroupC
                         responseList) {
                     if (x.getId() == message.getChatroomId()) {
                         int index = responseList.indexOf(x);
-                        x.setMessages(message);
+                        x.setMessage(message);
                         adapter.notifyItemChanged(index, x);
                     }
                 }

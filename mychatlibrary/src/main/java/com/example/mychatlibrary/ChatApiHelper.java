@@ -1,8 +1,12 @@
 package com.example.mychatlibrary;
 
+import android.webkit.MimeTypeMap;
+
+import androidx.core.content.MimeTypeFilter;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -25,8 +29,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public final class ChatApiHelper {
+final class ChatApiHelper {
 
     private static ChatApiHelper INSTANCE;
     private ApiService apiService = ApiClient.getApiService();
@@ -38,193 +41,256 @@ public final class ChatApiHelper {
         return INSTANCE;
     }
 
-    MutableLiveData<MyClassResponse> getOneToOneChatRooms() {
-        MutableLiveData<MyClassResponse> data = new MutableLiveData<>();
-        apiService.getOneToOneChatRooms().enqueue(new Callback<MyClassResponse>() {
+    MutableLiveData<BaseResponse<MyClassResponse>> getOneToOneChatRooms() {
+        MutableLiveData<BaseResponse<MyClassResponse>> data = new MutableLiveData<>();
+        apiService.getOneToOneChatRooms().enqueue(new Callback<BaseResponse<MyClassResponse>>() {
             @Override
-            public void onResponse(Call<MyClassResponse> call, Response<MyClassResponse> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
+            public void onResponse(Call<BaseResponse<MyClassResponse>> call, Response<BaseResponse<MyClassResponse>> response) {
+                BaseResponse<MyClassResponse> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
             }
 
             @Override
-            public void onFailure(Call<MyClassResponse> call, Throwable t) {
-                data.postValue(null);
-            }
-        });
-        return data;
-    }
-
-    MutableLiveData<List<GroupChatResponse>> getGroupChatRooms() {
-        MutableLiveData<List<GroupChatResponse>> data = new MutableLiveData<>();
-        apiService.getGroupChatRooms().enqueue(new Callback<List<GroupChatResponse>>() {
-            @Override
-            public void onResponse(Call<List<GroupChatResponse>> call, Response<List<GroupChatResponse>> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
-            }
-
-            @Override
-            public void onFailure(Call<List<GroupChatResponse>> call, Throwable t) {
-                data.postValue(null);
+            public void onFailure(Call<BaseResponse<MyClassResponse>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
             }
         });
         return data;
     }
 
-    MutableLiveData<CreateChatroomResponse> createChatRoom(CreateChatRoomRequest request) {
-        MutableLiveData<CreateChatroomResponse> data = new MutableLiveData<>();
-        apiService.createChatRoom(request).enqueue(new Callback<CreateChatroomResponse>() {
+    MutableLiveData<BaseResponse<List<GroupChatResponse>>> getGroupChatRooms() {
+        MutableLiveData<BaseResponse<List<GroupChatResponse>>> data = new MutableLiveData<>();
+        apiService.getGroupChatRooms().enqueue(new Callback<BaseResponse<List<GroupChatResponse>>>() {
             @Override
-            public void onResponse(Call<CreateChatroomResponse> call, Response<CreateChatroomResponse> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
+            public void onResponse(Call<BaseResponse<List<GroupChatResponse>>> call, Response<BaseResponse<List<GroupChatResponse>>> response) {
+                BaseResponse<List<GroupChatResponse>> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
             }
 
             @Override
-            public void onFailure(Call<CreateChatroomResponse> call, Throwable t) {
-                data.postValue(null);
-            }
-        });
-        return data;
-    }
-
-    MutableLiveData<DeleteChatRoomResponse> deleteChatRoom(int chatRoomId) {
-        MutableLiveData<DeleteChatRoomResponse> data = new MutableLiveData<>();
-        apiService.deleteChatRoom(chatRoomId).enqueue(new Callback<DeleteChatRoomResponse>() {
-            @Override
-            public void onResponse(Call<DeleteChatRoomResponse> call, Response<DeleteChatRoomResponse> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
-            }
-
-            @Override
-            public void onFailure(Call<DeleteChatRoomResponse> call, Throwable t) {
-                data.postValue(null);
+            public void onFailure(Call<BaseResponse<List<GroupChatResponse>>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
             }
         });
         return data;
     }
 
-    MutableLiveData<WebinarResponse> getJoinedChatRooms() {
-        MutableLiveData<WebinarResponse> data = new MutableLiveData<>();
-        apiService.getJoinedChatRooms().enqueue(new Callback<WebinarResponse>() {
+    MutableLiveData<BaseResponse<CreateChatroomResponse>> createChatRoom(CreateChatRoomRequest request) {
+        MutableLiveData<BaseResponse<CreateChatroomResponse>> data = new MutableLiveData<>();
+        apiService.createChatRoom(request).enqueue(new Callback<BaseResponse<CreateChatroomResponse>>() {
             @Override
-            public void onResponse(Call<WebinarResponse> call, Response<WebinarResponse> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
+            public void onResponse(Call<BaseResponse<CreateChatroomResponse>> call, Response<BaseResponse<CreateChatroomResponse>> response) {
+                BaseResponse<CreateChatroomResponse> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
             }
 
             @Override
-            public void onFailure(Call<WebinarResponse> call, Throwable t) {
-                data.postValue(null);
-            }
-        });
-        return data;
-    }
-
-    MutableLiveData<JoinChatRoomResponse> joinChatRoom(int chatroomId) {
-        MutableLiveData<JoinChatRoomResponse> data = new MutableLiveData<>();
-        apiService.joinChatRoom(chatroomId).enqueue(new Callback<JoinChatRoomResponse>() {
-            @Override
-            public void onResponse(Call<JoinChatRoomResponse> call, Response<JoinChatRoomResponse> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
-            }
-
-            @Override
-            public void onFailure(Call<JoinChatRoomResponse> call, Throwable t) {
-                data.postValue(null);
+            public void onFailure(Call<BaseResponse<CreateChatroomResponse>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
             }
         });
         return data;
     }
 
-    MutableLiveData<LeaveChatroomResponse> leaveChatRoom(int chatRoomId) {
-        MutableLiveData<LeaveChatroomResponse> data = new MutableLiveData<>();
-        apiService.leaveChatRoom(chatRoomId).enqueue(new Callback<LeaveChatroomResponse>() {
+    MutableLiveData<BaseResponse<DeleteChatRoomResponse>> deleteChatRoom(int chatRoomId) {
+        MutableLiveData<BaseResponse<DeleteChatRoomResponse>> data = new MutableLiveData<>();
+        apiService.deleteChatRoom(chatRoomId).enqueue(new Callback<BaseResponse<DeleteChatRoomResponse>>() {
             @Override
-            public void onResponse(Call<LeaveChatroomResponse> call, Response<LeaveChatroomResponse> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
+            public void onResponse(Call<BaseResponse<DeleteChatRoomResponse>> call, Response<BaseResponse<DeleteChatRoomResponse>> response) {
+                BaseResponse<DeleteChatRoomResponse> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
             }
 
             @Override
-            public void onFailure(Call<LeaveChatroomResponse> call, Throwable t) {
-                data.postValue(null);
-            }
-        });
-        return data;
-    }
-
-    MutableLiveData<MessagesResponseModel> getChatRoomMessages(int chatRoomId) {
-        MutableLiveData<MessagesResponseModel> data = new MutableLiveData<>();
-        apiService.getChatRoomMessages(chatRoomId).enqueue(new Callback<MessagesResponseModel>() {
-            @Override
-            public void onResponse(Call<MessagesResponseModel> call, Response<MessagesResponseModel> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
-            }
-
-            @Override
-            public void onFailure(Call<MessagesResponseModel> call, Throwable t) {
-                data.postValue(null);
+            public void onFailure(Call<BaseResponse<DeleteChatRoomResponse>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
             }
         });
         return data;
     }
 
-    MutableLiveData<MessagesResponseModel> getUserMessages(int userId) {
-        MutableLiveData<MessagesResponseModel> data = new MutableLiveData<>();
-        apiService.getUserMessages(userId).enqueue(new Callback<MessagesResponseModel>() {
+    MutableLiveData<BaseResponse<WebinarResponse>> getJoinedChatRooms() {
+        MutableLiveData<BaseResponse<WebinarResponse>> data = new MutableLiveData<>();
+        apiService.getJoinedChatRooms().enqueue(new Callback<BaseResponse<WebinarResponse>>() {
             @Override
-            public void onResponse(Call<MessagesResponseModel> call, Response<MessagesResponseModel> response) {
-                if (response.isSuccessful())
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
+            public void onResponse(Call<BaseResponse<WebinarResponse>> call, Response<BaseResponse<WebinarResponse>> response) {
+                BaseResponse<WebinarResponse> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
             }
 
             @Override
-            public void onFailure(Call<MessagesResponseModel> call, Throwable t) {
-                data.postValue(null);
+            public void onFailure(Call<BaseResponse<WebinarResponse>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
             }
         });
         return data;
     }
 
-    MutableLiveData<MediaMessageResponse> sendMediaMessage(int chatRoomId, File f, MediaType mediaType) {
-        MutableLiveData<MediaMessageResponse> data = new MutableLiveData<>();
+    MutableLiveData<BaseResponse<JoinChatRoomResponse>> joinChatRoom(int chatroomId) {
+        MutableLiveData<BaseResponse<JoinChatRoomResponse>> data = new MutableLiveData<>();
+        apiService.joinChatRoom(chatroomId).enqueue(new Callback<BaseResponse<JoinChatRoomResponse>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<JoinChatRoomResponse>> call, Response<BaseResponse<JoinChatRoomResponse>> response) {
+                BaseResponse<JoinChatRoomResponse> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<JoinChatRoomResponse>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
+            }
+        });
+        return data;
+    }
+
+    MutableLiveData<BaseResponse<LeaveChatroomResponse>> leaveChatRoom(int chatRoomId) {
+        MutableLiveData<BaseResponse<LeaveChatroomResponse>> data = new MutableLiveData<>();
+        apiService.leaveChatRoom(chatRoomId).enqueue(new Callback<BaseResponse<LeaveChatroomResponse>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<LeaveChatroomResponse>> call, Response<BaseResponse<LeaveChatroomResponse>> response) {
+                BaseResponse<LeaveChatroomResponse> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<LeaveChatroomResponse>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
+            }
+        });
+        return data;
+    }
+
+    MutableLiveData<BaseResponse<MessagesResponseModel>> getChatRoomMessages(int chatRoomId) {
+        MutableLiveData<BaseResponse<MessagesResponseModel>> data = new MutableLiveData<>();
+        apiService.getChatRoomMessages(chatRoomId).enqueue(new Callback<BaseResponse<MessagesResponseModel>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<MessagesResponseModel>> call, Response<BaseResponse<MessagesResponseModel>> response) {
+                BaseResponse<MessagesResponseModel> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<MessagesResponseModel>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
+            }
+        });
+        return data;
+    }
+
+    MutableLiveData<BaseResponse<MessagesResponseModel>> getUserMessages(int userId) {
+        MutableLiveData<BaseResponse<MessagesResponseModel>> data = new MutableLiveData<>();
+        apiService.getUserMessages(userId).enqueue(new Callback<BaseResponse<MessagesResponseModel>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<MessagesResponseModel>> call, Response<BaseResponse<MessagesResponseModel>> response) {
+                BaseResponse<MessagesResponseModel> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<MessagesResponseModel>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
+            }
+        });
+        return data;
+    }
+
+    MutableLiveData<BaseResponse<MediaMessageResponse>> sendMediaMessage(int chatRoomId, File f, MediaType mediaType) {
+        MutableLiveData<BaseResponse<MediaMessageResponse>> data = new MutableLiveData<>();
         RequestBody requestFile = RequestBody.create(f, mediaType);
         MultipartBody.Part body = MultipartBody.Part.createFormData("message[file]", f.getName(), requestFile);
-        apiService.sendMediaMessage(chatRoomId, body).enqueue(new Callback<MediaMessageResponse>() {
+        String descriptionString = mediaType.type();
+        RequestBody description =
+                RequestBody.create(descriptionString, MediaType.parse("text/plain"));
+        apiService.sendMediaMessage(chatRoomId,description, body).enqueue(new Callback<BaseResponse<MediaMessageResponse>>() {
             @Override
-            public void onResponse(Call<MediaMessageResponse> call, Response<MediaMessageResponse> response) {
-                if (response.code() == 201)
-                    data.postValue(response.body());
-                else
-                    data.postValue(null);
+            public void onResponse(Call<BaseResponse<MediaMessageResponse>> call, Response<BaseResponse<MediaMessageResponse>> response) {
+                BaseResponse<MediaMessageResponse> r = response.body();
+                if (r != null) {
+                    if (r.isStatus()) {
+                        data.postValue(response.body());
+                    } else {
+                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                }
             }
 
             @Override
-            public void onFailure(Call<MediaMessageResponse> call, Throwable t) {
-                data.postValue(null);
+            public void onFailure(Call<BaseResponse<MediaMessageResponse>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(t));
             }
         });
         return data;

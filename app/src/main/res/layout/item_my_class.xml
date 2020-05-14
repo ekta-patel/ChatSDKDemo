@@ -3,6 +3,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="chatroom"
             type="com.example.mychatlibrary.data.models.response.chatroom.Chatroom" />
@@ -14,7 +16,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivUser"
             android:layout_width="54dp"
             android:layout_height="54dp"
@@ -41,7 +43,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@{chatroom.messages.body}"
+            android:text="@{chatroom.message.body}"
+            android:visibility="@{chatroom.message.body == null ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivUser"

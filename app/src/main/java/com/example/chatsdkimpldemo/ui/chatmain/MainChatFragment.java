@@ -2,13 +2,18 @@ package com.example.chatsdkimpldemo.ui.chatmain;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -17,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
@@ -32,6 +38,7 @@ import com.example.chatsdkimpldemo.databinding.FragmentMainChatBinding;
 import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
+import com.example.chatsdkimpldemo.ui.base.RecyclerViewItemClickListener;
 import com.example.chatsdkimpldemo.utils.Constants;
 import com.example.chatsdkimpldemo.utils.MarginItemDecorator;
 import com.example.chatsdkimpldemo.utils.Utilities;
@@ -49,11 +56,12 @@ import java.util.Objects;
 import okhttp3.MediaType;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_OPEN_DOCUMENT;
 import static android.content.Intent.CATEGORY_OPENABLE;
 import static android.content.Intent.EXTRA_ALLOW_MULTIPLE;
 
-public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, MainChatViewModel> {
+public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, MainChatViewModel> implements RecyclerViewItemClickListener<Message> {
 
     private static final String TAG = MainChatFragment.class.getSimpleName();
 
@@ -66,6 +74,12 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
     private MediaRecorder recorder = null;
     private File audioFile = null;
     private File photoFile = null;
+    private DownloadManager downloadManager;
+    private BroadcastReceiver onComplete = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, "DOWNLOAD COMPLETED");
+        }
+    };
 
     @Override
     protected Class<MainChatViewModel> initViewModel() {
@@ -75,6 +89,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initFragment() {
+        downloadManager = (DownloadManager) requireActivity().getSystemService(DOWNLOAD_SERVICE);
         navController = NavHostFragment.findNavController(MainChatFragment.this);
         changeLightStatusBar(false, requireActivity());
         this.activityViewModel = ((MainActivity) requireActivity()).getViewModel();
@@ -136,10 +151,12 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_UP: {
+                        showSnackbar("Recording stopped");
                         onRecord(false);
                         return true;
                     }
                     case MotionEvent.ACTION_DOWN: {
+                        showSnackbar("Recording started");
                         onRecord(true);
                         return true;
                     }
@@ -158,6 +175,19 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
         observeData();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        requireActivity().registerReceiver(onComplete,
+                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        requireActivity().unregisterReceiver(onComplete);
+    }
+
     private void onRecord(boolean start) {
         if (start) {
             startRecording();
@@ -169,7 +199,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
     private void startRecording() {
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         try {
             audioFile = Utilities.createAudioFile(requireContext());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -177,7 +207,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             } else {
                 recorder.setOutputFile(audioFile.getAbsolutePath());
             }
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
             recorder.prepare();
         } catch (IOException e) {
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));
@@ -186,7 +216,11 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
     }
 
     private void stopRecording() {
-        recorder.stop();
+        try {
+            recorder.stop();
+        } catch (IllegalStateException e) {
+            showSnackbar("Did not record");
+        }
         recorder.release();
         recorder = null;
         Uri uri = FileProvider.getUriForFile(
@@ -194,7 +228,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                 "com.example.chatsdkimpldemo.fileprovider",
                 audioFile);
         if (uri != null) {
-            if (Objects.equals(uri.getScheme(), "content")) {
+            if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_CONTENT)) {
                 sendMediaMessage(uri);
             }
         }
@@ -202,7 +236,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
 
     private void initAdapter() {
         messageList = new ArrayList<>();
-        adapter = new ChatMessagesAdapter(messageList);
+        adapter = new ChatMessagesAdapter(messageList, MainChatFragment.this);
         binding.rvMessages.addItemDecoration(new MarginItemDecorator(16, 16, 16, 16));
         binding.rvMessages.setAdapter(adapter);
     }
@@ -225,6 +259,9 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                 if (res.getChatroom().getMessages() != null) {
                     this.messageList.addAll(res.getChatroom().getMessages());
                     adapter.notifyDataSetChanged();
+                    if (adapter.getItemCount() >= 1) {
+                        binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
+                    }
                 }
             }
         });
@@ -238,12 +275,11 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
         activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
                     messageList.add(message);
                     adapter.notifyItemInserted(messageList.size());
+                    binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
                 }
         );
         activityViewModel.getMediaMessageResponseMediatorLiveData().observe(getViewLifecycleOwner(), mediaMessageResponse -> {
-            if (!mediaMessageResponse.getStatus().equals("success")) {
-                showSnackbar("something went wrong");
-            }
+
         });
     }
 
@@ -287,7 +323,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                 if (data != null) {
                     Uri uri = data.getData();
                     if (uri != null) {
-                        if (Objects.equals(uri.getScheme(), "content")) {
+                        if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_CONTENT)) {
                             sendMediaMessage(uri);
                         }
                     }
@@ -296,7 +332,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                 if (data != null) {
                     Uri uri = data.getData();
                     if (uri != null) {
-                        if (Objects.equals(uri.getScheme(), "content")) {
+                        if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_CONTENT)) {
                             sendMediaMessage(uri);
                         }
                     }
@@ -305,7 +341,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                             "com.example.chatsdkimpldemo.fileprovider",
                             photoFile);
                     if (uri != null) {
-                        if (Objects.equals(uri.getScheme(), "content")) {
+                        if (Objects.equals(uri.getScheme(), ContentResolver.SCHEME_CONTENT)) {
                             sendMediaMessage(uri);
                         }
                     }
@@ -320,7 +356,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
         String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
         try {
             ParcelFileDescriptor fileDescriptor = contentResolver.openFileDescriptor(uri, "r");
-            FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+            FileInputStream inputStream = new FileInputStream(Objects.requireNonNull(fileDescriptor).getFileDescriptor());
             File f = Utilities.createFileForExtension(requireContext(), extension);
             FileOutputStream outputStream = new FileOutputStream(f);
             Utilities.copy(inputStream, outputStream);
@@ -351,6 +387,14 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                     }
                 }
                 break;
+            case Constants.PermissionCodes.WRITE_EXTERNAL_STORAGE:
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        showSnackbar("You can not download file without permission");
+                    }
+                }
+                break;
         }
     }
 
@@ -370,6 +414,24 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             if (f != null) {
                 photoFile = f;
             }
+        }
+    }
+
+    @Override
+    public void onItemClick(View v, Message data, int position) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (data.getAttachment() != null) {
+                Uri uri = Uri.parse("http://13.235.232.157" + data.getAttachment());
+                DownloadManager.Request request = new DownloadManager.Request(uri);
+                request.setDescription("Downloading file");
+                request.setTitle(getString(R.string.app_name));
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, uri.getLastPathSegment());
+                downloadManager.enqueue(request);
+            }
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.PermissionCodes.WRITE_EXTERNAL_STORAGE);
         }
     }
 }

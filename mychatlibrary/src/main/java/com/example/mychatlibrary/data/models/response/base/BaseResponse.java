@@ -4,19 +4,21 @@ import com.google.gson.annotations.SerializedName;
 
 public class BaseResponse<T> {
 
-    @SerializedName("status")
+    @SerializedName("success")
     private boolean status;
     @SerializedName("data")
     private T data;
-    private Throwable error;
+    @SerializedName("error")
+    private String error;
+    private Throwable t;
 
     public BaseResponse(T data) {
         this.data = data;
         this.error = null;
     }
 
-    public BaseResponse(Throwable error) {
-        this.error = error;
+    public BaseResponse(Throwable t) {
+        this.t = t;
         this.data = null;
     }
 
@@ -28,12 +30,20 @@ public class BaseResponse<T> {
         this.data = data;
     }
 
-    public Throwable getError() {
+    public String getError() {
         return error;
     }
 
-    public void setError(Throwable error) {
+    public void setError(String error) {
         this.error = error;
+    }
+
+    public Throwable getThrowable() {
+        return t;
+    }
+
+    public void setThrowable(Throwable t) {
+        this.t = t;
     }
 
     public boolean isStatus() {

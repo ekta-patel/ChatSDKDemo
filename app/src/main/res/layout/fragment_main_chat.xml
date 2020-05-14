@@ -27,7 +27,7 @@
             app:layout_constraintTop_toTopOf="@id/ivUser"
             app:srcCompat="@drawable/ic_back_two" />
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivUser"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -39,14 +39,20 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/ivUsername"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
             android:text="@{username}"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:fontFamily="@font/montserrat_semibold"
             app:layout_constraintBottom_toBottomOf="@id/ivUser"
+            app:layout_constraintEnd_toStartOf="@id/ivMore"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/ivUser"
             app:layout_constraintTop_toTopOf="@id/ivUser" />
 
@@ -65,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.15" />
+            app:layout_constraintGuide_begin="96dp" />
 
         <com.google.android.material.card.MaterialCardView
             style="@style/CustomCardViewStyle"
@@ -112,7 +118,9 @@
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/bg_et_message"
                     android:elevation="4dp"
+                    android:ellipsize="end"
                     android:hint="Type a message"
+                    android:maxLines="1"
                     android:paddingStart="36dp"
                     android:paddingTop="16dp"
                     android:paddingEnd="88dp"

@@ -35,8 +35,103 @@ public class MainViewModel extends ViewModel {
 
     private static final String TAG = MainViewModel.class.getSimpleName();
     private ConfigChatSocket chatSocket;
+    private ConfigChatSocket.ChatCallback defaultChannelListener = new ConfigChatSocket.ChatCallback() {
 
-    {
+        @Override
+        public void onConnected() {
+            Log.e(TAG, "CONNECTED");
+        }
+
+        @Override
+        public void onDisConnected() {
+            Log.e(TAG, "DIS-CONNECTED");
+        }
+
+        @Override
+        public void onRejected() {
+            Log.e(TAG, "REJECTED");
+        }
+
+        @Override
+        public void onFailed(Throwable t) {
+            Log.e(TAG, "FAILED" + t.getMessage());
+        }
+
+        @Override
+        public <T> void onReceived(T any) {
+            Log.e(TAG, "RECEIVED" + any.toString());
+            if (any instanceof Map) {
+                Map response = (Map) any;
+                if (response.containsKey("event")) {
+                    if (Objects.requireNonNull(response.get("event")).equals("created")) {
+                        if (response.containsKey("data")) {
+                            Map message = (Map) response.get("data");
+                            if (message != null) {
+                                Message message1 = new Message();
+                                int messageId = message.containsKey("id") ? Objects.requireNonNull((Double) message.get("id")).intValue() : -1;
+                                message1.setId(messageId);
+                                String messageBody = message.containsKey("body") ? (String) message.get("body") : "";
+                                message1.setBody(messageBody);
+                                int messageChatroomId = message.containsKey("chatroom_id") ? ((Double) Objects.requireNonNull(message.get("chatroom_id"))).intValue() : -1;
+                                message1.setChatroomId(messageChatroomId);
+                                String readAt = message.containsKey("read_at") ? ((String) message.get("read_at")) : "";
+                                message1.setReadAt(readAt);
+                                int deleteInSeconds = message.containsKey("delete_in_seconds") ? ((Double) Objects.requireNonNull(message.get("delete_in_seconds"))).intValue() : -1;
+                                message1.setDeleteInSeconds(deleteInSeconds);
+                                String deletedAt = message.containsKey("deleted_at") ? ((String) message.get("deleted_at")) : "";
+                                message1.setDeletedAt(deletedAt);
+                                int messageUserId = message.containsKey("user_id") ? Objects.requireNonNull(((Double) message.get("user_id"))).intValue() : -1;
+                                message1.setUserId(messageUserId);
+                                String messageCreatedAt = message.containsKey("created_at") ? (String) message.get("created_at") : "";
+                                message1.setCreatedAt(messageCreatedAt);
+                                String messageUpdatedAt = message.containsKey("updated_at") ? (String) message.get("updated_at") : "";
+                                message1.setUpdatedAt(messageUpdatedAt);
+                                String attachment = message.containsKey("attachment") ? (String) message.get("attachment") : "";
+                                message1.setAttachment(attachment);
+                                String mimeType = message.containsKey("mime_type") ? (String) message.get("mime_type") : "";
+                                message1.setMimeType(mimeType);
+                                String mediaType = message.containsKey("media_type") ? (String) message.get("media_type") : "";
+                                message1.setMediaType(mediaType);
+                                messageMutableLiveData.postValue(message1);
+                            }
+                        }
+                    } else {
+
+                    }
+                }
+            }
+        }
+    };
+
+    private ConfigChatSocket.ChatCallback newChannelListener = new ConfigChatSocket.ChatCallback() {
+        @Override
+        public void onConnected() {
+
+        }
+
+        @Override
+        public void onDisConnected() {
+
+        }
+
+        @Override
+        public void onRejected() {
+
+        }
+
+        @Override
+        public void onFailed(Throwable t) {
+
+        }
+
+        @Override
+        public <T> void onReceived(T any) {
+
+        }
+    };
+
+
+    public void createDefaultChatSocket(Map<String, String> params) {
         try {
             Map<String, String> options = new HashMap<>();
             try {
@@ -45,75 +140,12 @@ public class MainViewModel extends ViewModel {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel").query(options).addChatListener(new ConfigChatSocket.ChatCallback() {
-                @Override
-                public void onConnected() {
-                    Log.e(TAG, "CONNECTED");
-                }
-
-                @Override
-                public void onDisConnected() {
-                    Log.e(TAG, "DIS-CONNECTED");
-                }
-
-                @Override
-                public void onRejected() {
-                    Log.e(TAG, "REJECTED");
-                }
-
-                @Override
-                public void onFailed(Throwable t) {
-                    Log.e(TAG, "FAILED" + t.getMessage());
-                }
-
-                @Override
-                public <T> void onReceived(T any) {
-                    Log.e(TAG, "RECEIVED" + any.toString());
-                    if (any instanceof Map) {
-                        Map response = (Map) any;
-                        if (response.containsKey("event")) {
-                            if (Objects.requireNonNull(response.get("event")).equals("created")) {
-                                if (response.containsKey("data")) {
-                                    Map message = (Map) response.get("data");
-                                    if (message != null) {
-                                        Message message1 = new Message();
-                                        int messageId = message.containsKey("id") ? Objects.requireNonNull((Double) message.get("id")).intValue() : -1;
-                                        message1.setId(messageId);
-                                        String messageBody = message.containsKey("body") ? (String) message.get("body") : "";
-                                        message1.setBody(messageBody);
-                                        int messageChatroomId = message.containsKey("chatroom_id") ? ((Double) Objects.requireNonNull(message.get("chatroom_id"))).intValue() : -1;
-                                        message1.setChatroomId(messageChatroomId);
-                                        String readAt = message.containsKey("read_at") ? ((String) message.get("read_at")) : "";
-                                        message1.setReadAt(readAt);
-                                        int deleteInSeconds = message.containsKey("delete_in_seconds") ? ((Double) Objects.requireNonNull(message.get("delete_in_seconds"))).intValue() : -1;
-                                        message1.setDeleteInSeconds(deleteInSeconds);
-                                        String deletedAt = message.containsKey("deleted_at") ? ((String) message.get("deleted_at")) : "";
-                                        message1.setDeletedAt(deletedAt);
-                                        int messageUserId = message.containsKey("user_id") ? Objects.requireNonNull(((Double) message.get("user_id"))).intValue() : -1;
-                                        message1.setUserId(messageUserId);
-                                        String messageCreatedAt = message.containsKey("created_at") ? (String) message.get("created_at") : "";
-                                        message1.setCreatedAt(messageCreatedAt);
-                                        String messageUpdatedAt = message.containsKey("updated_at") ? (String) message.get("updated_at") : "";
-                                        message1.setUpdatedAt(messageUpdatedAt);
-                                        String attachment = message.containsKey("attachment") ? (String) message.get("attachment") : "";
-                                        message1.setAttachment(attachment);
-                                        messageMutableLiveData.postValue(message1);
-                                    }
-                                }
-                            } else {
-
-                            }
-                        }
-                    }
-                }
-            }).build();
+            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel").params(params).query(options).addChatListener(defaultChannelListener).build();
         } catch (
                 URISyntaxException e) {
             e.printStackTrace();
         }
-
     }
-
 
     private MutableLiveData<Message> messageMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> _isLoading = new MutableLiveData<>();
@@ -126,93 +158,138 @@ public class MainViewModel extends ViewModel {
     private MediatorLiveData<WebinarResponse> joinedChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<JoinChatRoomResponse> joinChatroomResponseMediatorLiveData = new MediatorLiveData<>();
     private MediatorLiveData<MediaMessageResponse> mediaMessageResponseMediatorLiveData = new MediatorLiveData<>();
+    private MediatorLiveData<Throwable> error = new MediatorLiveData<>();
+
 
     public ConfigChatSocket getChatSocket() {
         return chatSocket;
     }
 
-    void connectWebSocket() {
-        chatSocket.connect();
+    public void connectWebSocket(Map<String, String> v) {
+        chatSocket.connect(v);
     }
 
-    void disconnectWebSocket() {
+    public void disconnectWebSocket() {
         chatSocket.disconnect();
     }
 
     public void deleteChatroom(int chatRoomId) {
         _isLoading.postValue(true);
         deleteChatRoomResponseMediatorLiveData.addSource(chatSocket.deleteChatroom(chatRoomId), response -> {
-            deleteChatRoomResponseMediatorLiveData.postValue(response);
+            if (response.getThrowable() == null) {
+                deleteChatRoomResponseMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
+            _isLoading.postValue(false);
         });
     }
 
     public void leaveChatroom(int chatRoomId) {
         _isLoading.postValue(true);
-        leaveChatroomResponseMediatorLiveData.addSource(chatSocket.leaveChatroom(chatRoomId), leaveChatroomResponse -> {
+        leaveChatroomResponseMediatorLiveData.addSource(chatSocket.leaveChatroom(chatRoomId), response -> {
+            if (response.getThrowable() == null) {
+                leaveChatroomResponseMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
             _isLoading.postValue(false);
-            leaveChatroomResponseMediatorLiveData.postValue(leaveChatroomResponse);
         });
     }
 
     public void getChatRoomMessages(int chatRoomId) {
         _isLoading.postValue(true);
-        messagesResponseModelMediatorLiveData.addSource(chatSocket.getChatRoomMessages(chatRoomId), messagesResponseModel -> {
+        messagesResponseModelMediatorLiveData.addSource(chatSocket.getChatRoomMessages(chatRoomId), response -> {
+            if (response.getThrowable() == null) {
+                messagesResponseModelMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
             _isLoading.postValue(false);
-            messagesResponseModelMediatorLiveData.postValue(messagesResponseModel);
         });
     }
 
     public void getUserMessages(int userId) {
         _isLoading.postValue(true);
-        messagesResponseModelMediatorLiveData.addSource(chatSocket.getUserMessages(userId), messagesResponseModel -> {
+        messagesResponseModelMediatorLiveData.addSource(chatSocket.getUserMessages(userId), response -> {
+            if (response.getThrowable() == null) {
+                messagesResponseModelMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
             _isLoading.postValue(false);
-            messagesResponseModelMediatorLiveData.postValue(messagesResponseModel);
         });
     }
 
     public void getJoinedChatRooms() {
         _isLoading.postValue(true);
         joinedChatroomResponseMediatorLiveData.addSource(chatSocket.getJoinedChatRooms(), response -> {
+            if (response.getThrowable() == null) {
+                joinedChatroomResponseMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
             _isLoading.postValue(false);
-            joinedChatroomResponseMediatorLiveData.postValue(response);
         });
     }
 
     public void getChatRooms() {
         _isLoading.postValue(true);
         getGroupChatRoomsMediatorLiveData.addSource(chatSocket.getGroupChatRooms(), response -> {
+            if (response.getThrowable() == null) {
+                getGroupChatRoomsMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
             _isLoading.postValue(false);
-            getGroupChatRoomsMediatorLiveData.postValue(response);
         });
     }
 
     public void createChatRoom(CreateChatRoomRequest request) {
         _isLoading.postValue(true);
         createChatroomResponseMediatorLiveData.addSource(chatSocket.createChatRoom(request), response -> {
+            if (response.getThrowable() == null) {
+                createChatroomResponseMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
             _isLoading.postValue(false);
-            createChatroomResponseMediatorLiveData.postValue(response);
         });
     }
 
     public void joinChatRoom(int chatroomId) {
         _isLoading.postValue(true);
         joinChatroomResponseMediatorLiveData.addSource(chatSocket.joinChatRoom(chatroomId), response -> {
+            if (response.getThrowable() == null) {
+                joinChatroomResponseMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
             _isLoading.postValue(false);
-            joinChatroomResponseMediatorLiveData.postValue(response);
         });
     }
 
     public void getOneToOneChatRooms() {
         _isLoading.postValue(true);
         getOneToOneChatRoomsMediatorLiveData.addSource(chatSocket.getOneToOneChatRooms(), response -> {
+            if (response.getThrowable() == null) {
+                getOneToOneChatRoomsMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
             _isLoading.postValue(false);
-            getOneToOneChatRoomsMediatorLiveData.postValue(response);
         });
     }
 
     public void sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
-        getOneToOneChatRoomsMediatorLiveData.addSource(chatSocket.sendMediaMessage(chatroomId, f, mediaType), response -> {
-            mediaMessageResponseMediatorLiveData.postValue(response);
+        _isLoading.postValue(true);
+        mediaMessageResponseMediatorLiveData.addSource(chatSocket.sendMediaMessage(chatroomId, f, mediaType), response -> {
+            if (response.getThrowable() == null) {
+                mediaMessageResponseMediatorLiveData.postValue(response.getData());
+            } else {
+                error.postValue(response.getThrowable());
+            }
+            _isLoading.postValue(false);
         });
     }
 
@@ -258,6 +335,10 @@ public class MainViewModel extends ViewModel {
 
     public LiveData<MediaMessageResponse> getMediaMessageResponseMediatorLiveData() {
         return mediaMessageResponseMediatorLiveData;
+    }
+
+    public LiveData<Throwable> getError() {
+        return error;
     }
 
 }

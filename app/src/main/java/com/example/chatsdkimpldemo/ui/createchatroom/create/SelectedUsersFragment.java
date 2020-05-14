@@ -23,7 +23,9 @@ import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRo
 import com.example.mychatlibrary.data.models.response.user.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBinding, CreateChatroomViewModel> implements RecyclerViewItemClickListener<User> {
@@ -96,15 +98,19 @@ public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBin
 
     private void observeData() {
         activityViewModel.getCreateChatRoomResponseLiveData().observe(getViewLifecycleOwner(), res -> {
-            if (res.getStatus().equals("success")) {
-                NavOptions options = new NavOptions.Builder().setPopUpTo(R.id.homeFragment, false).build();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(Constants.BundleKeys.IS_GROUP, true);
-                bundle.putInt(Constants.BundleKeys.CHATROOM_ID, res.getChatroom().getId());
-                bundle.putString(Constants.BundleKeys.CHATROOM_NAME, res.getChatroom().getName());
-                NavDirections directions = SelectedUsersFragmentDirections.actionCreateChatroomNameFragmentToMainChatFragment(bundle);
-                navController.navigate(directions, options);
-            }
+            Map<String, String> m = new HashMap<>();
+            m.put("chatrooms:", String.valueOf(res.getChatroom().getId()));
+            activityViewModel.connectWebSocket(m);
+            NavOptions options = new NavOptions.Builder().setPopUpTo(R.id.homeFragment, false).build();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(Constants.BundleKeys.IS_GROUP, true);
+            bundle.putInt(Constants.BundleKeys.CHATROOM_ID, res.getChatroom().getId());
+            bundle.putString(Constants.BundleKeys.CHATROOM_NAME, res.getChatroom().getName());
+            NavDirections directions = SelectedUsersFragmentDirections.actionCreateChatroomNameFragmentToMainChatFragment(bundle);
+            navController.navigate(directions, options);
+        });
+        activityViewModel.getError().observe(getViewLifecycleOwner(), e -> {
+            showSnackbar(e.getMessage());
         });
         activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {

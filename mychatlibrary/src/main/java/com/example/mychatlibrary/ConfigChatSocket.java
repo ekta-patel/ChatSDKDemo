@@ -1,13 +1,14 @@
 package com.example.mychatlibrary;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.mychatlibrary.actioncables.ActionCable;
 import com.example.mychatlibrary.actioncables.Channel;
 import com.example.mychatlibrary.actioncables.Consumer;
 import com.example.mychatlibrary.actioncables.Subscription;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -38,14 +39,14 @@ public final class ConfigChatSocket {
     private ConfigChatSocket(Builder builder) throws URISyntaxException {
         this.builder = builder;
         this.apiHelper = ChatApiHelper.getInstance();
-        initConfig(builder.baseUrl, builder.options, builder.headers);
+        initConfig(builder.baseUrl, builder.query, builder.headers);
     }
 
-    private void initConfig(String baseUrl, Map<String, String> options, Map<String, String> headers) throws URISyntaxException {
+    private void initConfig(String baseUrl, Map<String, String> query, Map<String, String> headers) throws URISyntaxException {
         URI uri = new URI(baseUrl);
         Consumer.Options consumerOptions = new Consumer.Options();
-        if (options != null) {
-            consumerOptions.getConnection().setQuery(options);
+        if (query != null) {
+            consumerOptions.getConnection().setQuery(query);
         }
         if (headers != null) {
             consumerOptions.getConnection().setHeaders(headers);
@@ -53,8 +54,13 @@ public final class ConfigChatSocket {
         _Consumer = ActionCable.INSTANCE.createConsumer(uri, consumerOptions);
     }
 
-    private void initSubscription(String channelName, Map<String, ?> options, final ChatCallback callback) {
-        Channel bookingIdChannel = new Channel(channelName, options);
+    private void initSubscription(String channelName, Map<String, ?> params, final ChatCallback callback) {
+        Channel bookingIdChannel;
+        if (params != null) {
+            bookingIdChannel = new Channel(channelName, params);
+        } else {
+            bookingIdChannel = new Channel(channelName, new HashMap<>());
+        }
         subscriptionChat = _Consumer.getSubscriptions().create(bookingIdChannel);
 
         if (callback != null) {
@@ -104,68 +110,68 @@ public final class ConfigChatSocket {
         subscriptionChat.perform("speak", map);
     }
 
-    public MutableLiveData<MessagesResponseModel> getChatRoomMessages(int chatRoomId) {
-        MediatorLiveData<MessagesResponseModel> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<MessagesResponseModel>> getChatRoomMessages(int chatRoomId) {
+        MediatorLiveData<BaseResponse<MessagesResponseModel>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.getChatRoomMessages(chatRoomId), data::postValue);
         return data;
     }
 
-    public MutableLiveData<MessagesResponseModel> getUserMessages(int userId) {
-        MediatorLiveData<MessagesResponseModel> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<MessagesResponseModel>> getUserMessages(int userId) {
+        MediatorLiveData<BaseResponse<MessagesResponseModel>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.getUserMessages(userId), data::postValue);
         return data;
     }
 
-    public MutableLiveData<DeleteChatRoomResponse> deleteChatroom(int chatRoomId) {
-        MediatorLiveData<DeleteChatRoomResponse> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<DeleteChatRoomResponse>> deleteChatroom(int chatRoomId) {
+        MediatorLiveData<BaseResponse<DeleteChatRoomResponse>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.deleteChatRoom(chatRoomId), data::postValue);
         return data;
     }
 
-    public MutableLiveData<LeaveChatroomResponse> leaveChatroom(int chatRoomId) {
-        MediatorLiveData<LeaveChatroomResponse> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<LeaveChatroomResponse>> leaveChatroom(int chatRoomId) {
+        MediatorLiveData<BaseResponse<LeaveChatroomResponse>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.leaveChatRoom(chatRoomId), data::postValue);
         return data;
     }
 
-    public MutableLiveData<MyClassResponse> getOneToOneChatRooms() {
-        MediatorLiveData<MyClassResponse> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<MyClassResponse>> getOneToOneChatRooms() {
+        MediatorLiveData<BaseResponse<MyClassResponse>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.getOneToOneChatRooms(), data::postValue);
         return data;
     }
 
-    public MutableLiveData<List<GroupChatResponse>> getGroupChatRooms() {
-        MediatorLiveData<List<GroupChatResponse>> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<List<GroupChatResponse>>> getGroupChatRooms() {
+        MediatorLiveData<BaseResponse<List<GroupChatResponse>>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.getGroupChatRooms(), data::postValue);
         return data;
     }
 
-    public MutableLiveData<CreateChatroomResponse> createChatRoom(CreateChatRoomRequest request) {
-        MediatorLiveData<CreateChatroomResponse> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<CreateChatroomResponse>> createChatRoom(CreateChatRoomRequest request) {
+        MediatorLiveData<BaseResponse<CreateChatroomResponse>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.createChatRoom(request), data::postValue);
         return data;
     }
 
-    public MutableLiveData<JoinChatRoomResponse> joinChatRoom(int chatroomId) {
-        MediatorLiveData<JoinChatRoomResponse> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<JoinChatRoomResponse>> joinChatRoom(int chatroomId) {
+        MediatorLiveData<BaseResponse<JoinChatRoomResponse>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.joinChatRoom(chatroomId), data::postValue);
         return data;
     }
 
-    public MutableLiveData<WebinarResponse> getJoinedChatRooms() {
-        MediatorLiveData<WebinarResponse> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<WebinarResponse>> getJoinedChatRooms() {
+        MediatorLiveData<BaseResponse<WebinarResponse>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.getJoinedChatRooms(), data::postValue);
         return data;
     }
 
-    public MutableLiveData<MediaMessageResponse> sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
-        MediatorLiveData<MediaMessageResponse> data = new MediatorLiveData<>();
+    public LiveData<BaseResponse<MediaMessageResponse>> sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
+        MediatorLiveData<BaseResponse<MediaMessageResponse>> data = new MediatorLiveData<>();
         data.addSource(apiHelper.sendMediaMessage(chatroomId, f, mediaType), data::postValue);
         return data;
     }
 
-    public void connect() {
-        initSubscription(builder.channelName, builder.options, builder.callback);
+    public void connect(Map<String, String> v) {
+        initSubscription(builder.channelName, v, builder.callback);
     }
 
     public void disconnect() {
@@ -176,8 +182,9 @@ public final class ConfigChatSocket {
         private String baseUrl;
         private String channelName;
         private Map<String, String> headers;
-        private Map<String, String> options;
+        private Map<String, String> query;
         private ChatCallback callback;
+        private Map<String, String> params;
 
         public Builder(String baseUrl, String channelName) {
             this.channelName = channelName;
@@ -185,7 +192,12 @@ public final class ConfigChatSocket {
         }
 
         public Builder query(Map<String, String> options) {
-            this.options = options;
+            this.query = options;
+            return this;
+        }
+
+        public Builder params(Map<String, String> params) {
+            this.params = params;
             return this;
         }
 

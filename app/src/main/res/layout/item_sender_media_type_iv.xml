@@ -3,6 +3,12 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="isVideo"
+            type="Boolean" />
+
         <variable
             name="message"
             type="com.example.mychatlibrary.data.models.response.messages.Message" />
@@ -18,24 +24,31 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.10" />
+            app:layout_constraintGuide_percent="0.25" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/messageSender"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/rounded_rectangle_sender"
-            android:padding="16dp"
-            android:text="@{message.body}"
-            android:textColor="@android:color/black"
-            app:layout_constrainedWidth="true"
+            app:imageUrl="@{message.attachment}"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1"
             app:layout_constraintEnd_toStartOf="@id/profileReceiver"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/guideLineSender"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_max="wrap" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:visibility="@{isVideo ? View.VISIBLE: View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/messageSender"
+            app:layout_constraintEnd_toEndOf="@id/messageSender"
+            app:layout_constraintStart_toStartOf="@id/messageSender"
+            app:layout_constraintTop_toTopOf="@id/messageSender"
+            app:srcCompat="@drawable/ic_play_video" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/profileReceiver"

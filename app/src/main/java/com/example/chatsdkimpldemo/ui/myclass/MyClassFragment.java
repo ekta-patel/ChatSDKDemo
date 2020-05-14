@@ -26,11 +26,7 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
         initAdapter();
 
         observeData();
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
         activityViewModel.getOneToOneChatRooms();
     }
 
@@ -43,11 +39,12 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
 
     private void observeData() {
         activityViewModel.getOneToOneChatResponseLiveData().observe(getViewLifecycleOwner(), resList -> {
-            if (resList != null) {
-                this.responseList.clear();
-                this.responseList.addAll(resList.getChatrooms());
-                adapter.notifyDataSetChanged();
-            }
+            this.responseList.clear();
+            this.responseList.addAll(resList.getChatrooms());
+            adapter.notifyDataSetChanged();
+        });
+        activityViewModel.getError().observe(getViewLifecycleOwner(), e -> {
+            showSnackbar(e.getMessage());
         });
         activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
@@ -62,7 +59,7 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
                         responseList) {
                     if (x.getId() == message.getChatroomId()) {
                         int index = responseList.indexOf(x);
-                        x.setMessages(message);
+                        x.setMessage(message);
                         adapter.notifyItemChanged(index, x);
                     }
                 }

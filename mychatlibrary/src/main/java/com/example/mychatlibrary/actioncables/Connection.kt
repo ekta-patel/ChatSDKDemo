@@ -178,14 +178,14 @@ class Connection constructor(
     }
 
     private val webSocketListener = object : WebSocketListener() {
-        override fun onOpen(openedWebSocket: WebSocket, response: Response) {
+        override fun onOpen(webSocket: WebSocket, response: Response) {
             state = State.OPEN
-            webSocket = openedWebSocket
+            this@Connection.webSocket = webSocket
             eventsHandler.handle { onOpen.invoke() }
         }
 
-        override fun onFailure(webSocket: WebSocket, throwable: Throwable, response: Response?) {
-            eventsHandler.handle { handleFailure(throwable) }
+        override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+            eventsHandler.handle { handleFailure(t) }
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {

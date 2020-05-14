@@ -46,9 +46,6 @@ public class Chatroom implements Parcelable {
     @SerializedName("message")
     @Expose
     private Message message;
-    @SerializedName("messages")
-    @Expose
-    private Message messages;
 
     public int getId() {
         return id;
@@ -138,14 +135,6 @@ public class Chatroom implements Parcelable {
         this.message = message;
     }
 
-    public Message getMessages() {
-        return messages;
-    }
-
-    public void setMessages(Message messages) {
-        this.messages = messages;
-    }
-
     protected Chatroom(Parcel in) {
         id = in.readInt();
         name = in.readString();
@@ -163,7 +152,6 @@ public class Chatroom implements Parcelable {
         groupMember = in.readInt();
         lastReadAt = in.readString();
         message = (Message) in.readValue(Message.class.getClassLoader());
-        messages = (Message) in.readValue(Message.class.getClassLoader());
     }
 
     @Override
@@ -189,7 +177,6 @@ public class Chatroom implements Parcelable {
         dest.writeInt(groupMember);
         dest.writeString(lastReadAt);
         dest.writeValue(message);
-        dest.writeValue(messages);
     }
 
     @SuppressWarnings("unused")

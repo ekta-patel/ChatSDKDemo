@@ -38,6 +38,10 @@ public class Message implements Parcelable {
     @SerializedName("attachment")
     @Expose
     private String attachment;
+    @SerializedName("mime_type")
+    private String mimeType;
+    @SerializedName("media_type")
+    private String mediaType;
 
     public int getId() {
         return id;
@@ -119,6 +123,22 @@ public class Message implements Parcelable {
         this.attachment = attachment;
     }
 
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
+
     public Message() {
     }
 
@@ -133,6 +153,8 @@ public class Message implements Parcelable {
         createdAt = in.readString();
         updatedAt = in.readString();
         attachment = in.readString();
+        mimeType = in.readString();
+        mediaType = in.readString();
     }
 
     @Override
@@ -152,6 +174,8 @@ public class Message implements Parcelable {
         dest.writeString(createdAt);
         dest.writeString(updatedAt);
         dest.writeString(attachment);
+        dest.writeString(mimeType);
+        dest.writeString(mediaType);
     }
 
     @SuppressWarnings("unused")

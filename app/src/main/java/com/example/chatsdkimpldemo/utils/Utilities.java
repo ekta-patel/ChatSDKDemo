@@ -32,7 +32,7 @@ public class Utilities {
         File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
         File audio = File.createTempFile(
                 audioFileName,
-                ".3gp",
+                ".mp3",
                 storageDir
         );
         return audio;

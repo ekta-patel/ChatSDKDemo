@@ -1,6 +1,7 @@
 package com.example.mychatlibrary.data.remote;
 
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -14,6 +15,7 @@ import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 import java.util.List;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -26,34 +28,35 @@ import retrofit2.http.Path;
 public interface ApiService {
 
     @GET("chatrooms")
-    Call<List<GroupChatResponse>> getGroupChatRooms();
+    Call<BaseResponse<List<GroupChatResponse>>> getGroupChatRooms();
 
     @GET("users")
-    Call<MyClassResponse> getOneToOneChatRooms();
+    Call<BaseResponse<MyClassResponse>> getOneToOneChatRooms();
 
     @POST("chatrooms")
-    Call<CreateChatroomResponse> createChatRoom(@Body CreateChatRoomRequest request);
+    Call<BaseResponse<CreateChatroomResponse>> createChatRoom(@Body CreateChatRoomRequest request);
 
     @DELETE("chatrooms/{chatroomId}")
-    Call<DeleteChatRoomResponse> deleteChatRoom(@Path("chatroomId") int chatRoomId);
+    Call<BaseResponse<DeleteChatRoomResponse>> deleteChatRoom(@Path("chatroomId") int chatRoomId);
 
     @GET("chatrooms/joins_channel")
-    Call<WebinarResponse> getJoinedChatRooms();
+    Call<BaseResponse<WebinarResponse>> getJoinedChatRooms();
 
     @POST("chatrooms/{chatroomId}/chatroom_users")
-    Call<JoinChatRoomResponse> joinChatRoom(@Path("chatroomId") int chatroomId);
+    Call<BaseResponse<JoinChatRoomResponse>> joinChatRoom(@Path("chatroomId") int chatroomId);
 
     @DELETE("chatrooms/{chatroomId}/chatroom_users")
-    Call<LeaveChatroomResponse> leaveChatRoom(@Path("chatroomId") int chatRoomId);
+    Call<BaseResponse<LeaveChatroomResponse>> leaveChatRoom(@Path("chatroomId") int chatRoomId);
 
     @GET("chatrooms/{chatroomId}")
-    Call<MessagesResponseModel> getChatRoomMessages(@Path("chatroomId") int chatRoomId);
+    Call<BaseResponse<MessagesResponseModel>> getChatRoomMessages(@Path("chatroomId") int chatRoomId);
 
     @GET("direct_messages/{userId}")
-    Call<MessagesResponseModel> getUserMessages(@Path("userId") int userId);
+    Call<BaseResponse<MessagesResponseModel>> getUserMessages(@Path("userId") int userId);
 
     @Multipart
     @POST("chatrooms/{chatroomId}/messages")
-    Call<MediaMessageResponse> sendMediaMessage(@Path("chatroomId") int chatRoomId,
-                                                @Part MultipartBody.Part file);
+    Call<BaseResponse<MediaMessageResponse>> sendMediaMessage(@Path("chatroomId") int chatRoomId,
+                                                              @Part("message[media_type]") RequestBody type,
+                                                              @Part MultipartBody.Part file);
 }

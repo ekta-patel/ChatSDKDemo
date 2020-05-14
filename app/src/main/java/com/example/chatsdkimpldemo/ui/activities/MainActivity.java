@@ -23,7 +23,8 @@ public class MainActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         DataBindingUtil.setContentView(this, R.layout.activity_main);
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        viewModel.connectWebSocket();
+        viewModel.createDefaultChatSocket(null);
+        viewModel.connectWebSocket(null);
     }
 
     @Override

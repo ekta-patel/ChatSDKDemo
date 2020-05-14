@@ -1,10 +1,11 @@
 package com.example.chatsdkimpldemo.utils;
 
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.databinding.BindingAdapter;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,14 +14,14 @@ import java.util.Date;
 public class BindingHelper {
 
     @BindingAdapter({"imageUrl"})
-    public static void loadImage(SimpleDraweeView view, String imageUrl) {
+    public static void loadImage(AppCompatImageView view, String imageUrl) {
         String x = "http://13.235.232.157" + imageUrl;
-        view.setImageURI(x);
+        Glide.with(view.getContext()).load(x).centerCrop().into(view);
     }
 
     @BindingAdapter({"loadProfile"})
-    public static void loadProfile(SimpleDraweeView view, int id) {
-        view.setImageURI("https://cdn.clipart.email/34ef97566964eb0d43fa11c929d00f2c_avatar-pic-circle-png-picture-401512-avatar-pic-circle-png_512-512.png");
+    public static void loadProfile(AppCompatImageView view, int id) {
+        Glide.with(view.getContext()).load("https://cdn.clipart.email/34ef97566964eb0d43fa11c929d00f2c_avatar-pic-circle-png-picture-401512-avatar-pic-circle-png_512-512.png").centerCrop().into(view);
     }
 
     @BindingAdapter({"setTime"})
