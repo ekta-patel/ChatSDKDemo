@@ -48,32 +48,32 @@ public class GroupChatRoomsFragment extends BaseFragment<FragmentGroupChatBindin
     }
 
     private void observeData() {
-        activityViewModel.getGroupChatResponseLiveData().observe(getViewLifecycleOwner(), resList -> {
-            if (resList != null) {
-                this.responseList.clear();
-                this.responseList.addAll(resList);
-                adapter.notifyDataSetChanged();
-            }
-        });
-        activityViewModel.getJoinChatRoomResponseLiveData().observe(getViewLifecycleOwner(), joinChatRoomResponse -> {
-            if (joinChatRoomResponse != null) {
-                Toast.makeText(getContext(), "Successfully joined!", Toast.LENGTH_LONG).show();
-                navController.navigateUp();
-            }
-        });
-        activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean) {
-                showLoader();
-            } else {
-                dismissLoader();
-            }
-        });
-        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
-            if (message != null) {
-//                    responseList.add(message);
-                adapter.notifyItemInserted(adapter.getItemCount());
-            }
-        });
+//        activityViewModel.getGroupChatResponseLiveData().observe(getViewLifecycleOwner(), resList -> {
+//            if (resList != null) {
+//                this.responseList.clear();
+//                this.responseList.addAll(resList);
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
+//        activityViewModel.getJoinChatRoomResponseLiveData().observe(getViewLifecycleOwner(), joinChatRoomResponse -> {
+//            if (joinChatRoomResponse != null) {
+//                Toast.makeText(getContext(), "Successfully joined!", Toast.LENGTH_LONG).show();
+//                navController.navigateUp();
+//            }
+//        });
+//        activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
+//            if (aBoolean) {
+//                showLoader();
+//            } else {
+//                dismissLoader();
+//            }
+//        });
+//        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
+//            if (message != null) {
+////                    responseList.add(message);
+//                adapter.notifyItemInserted(adapter.getItemCount());
+//            }
+//        });
     }
 
     @Override

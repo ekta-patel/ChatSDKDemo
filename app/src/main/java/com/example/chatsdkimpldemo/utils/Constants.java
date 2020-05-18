@@ -10,6 +10,10 @@ public final class Constants {
         public static final String OTHER_USER_NAME = "other_user_name";
         public static final String SELECTED_USERS = "selected_users";
         public static final String PHOTO_FILE = "photo_file";
+        public static final String SHARED_FILE_URI = "shared_file_uri";
+        public static final String SHARED_TEXT = "shared_text";
+        public static final String IS_TEXT_SHARED = "is_text_shared";
+        public static final String IS_FROM_SHARING = "is_from_sharing";
     }
 
     public static class RequestCodes {

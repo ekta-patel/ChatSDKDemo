@@ -56,4 +56,19 @@
                 app:argType="android.os.Bundle" />
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/selectUsersForShareFragment"
+        android:name="com.example.chatsdkimpldemo.ui.shareselection.SelectUsersForShareFragment"
+        android:label="SelectUsersForShareFragment">
+        <action
+            android:id="@+id/action_selectUsersForShareFragment_to_mainChatFragment"
+            app:destination="@id/mainChatFragment">
+            <argument
+                android:name="my_args"
+                app:argType="android.os.Bundle" />
+        </action>
+    </fragment>
+    <action
+        android:id="@+id/action_global_selectUsersForShareFragment"
+        app:destination="@id/selectUsersForShareFragment" />
 </navigation>

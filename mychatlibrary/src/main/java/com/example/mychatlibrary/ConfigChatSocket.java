@@ -2,6 +2,7 @@ package com.example.mychatlibrary;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.mychatlibrary.actioncables.ActionCable;
 import com.example.mychatlibrary.actioncables.Channel;
@@ -111,45 +112,31 @@ public final class ConfigChatSocket {
     }
 
     public LiveData<BaseResponse<MessagesResponseModel>> getChatRoomMessages(int chatRoomId) {
-        MediatorLiveData<BaseResponse<MessagesResponseModel>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.getChatRoomMessages(chatRoomId), data::postValue);
-        return data;
+        return apiHelper.getChatRoomMessages(chatRoomId);
     }
 
     public LiveData<BaseResponse<MessagesResponseModel>> getUserMessages(int userId) {
-        MediatorLiveData<BaseResponse<MessagesResponseModel>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.getUserMessages(userId), data::postValue);
-        return data;
+        return apiHelper.getUserMessages(userId);
     }
 
     public LiveData<BaseResponse<DeleteChatRoomResponse>> deleteChatroom(int chatRoomId) {
-        MediatorLiveData<BaseResponse<DeleteChatRoomResponse>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.deleteChatRoom(chatRoomId), data::postValue);
-        return data;
+        return apiHelper.deleteChatRoom(chatRoomId);
     }
 
     public LiveData<BaseResponse<LeaveChatroomResponse>> leaveChatroom(int chatRoomId) {
-        MediatorLiveData<BaseResponse<LeaveChatroomResponse>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.leaveChatRoom(chatRoomId), data::postValue);
-        return data;
+        return apiHelper.leaveChatRoom(chatRoomId);
     }
 
     public LiveData<BaseResponse<MyClassResponse>> getOneToOneChatRooms() {
-        MediatorLiveData<BaseResponse<MyClassResponse>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.getOneToOneChatRooms(), data::postValue);
-        return data;
+        return apiHelper.getOneToOneChatRooms();
     }
 
     public LiveData<BaseResponse<List<GroupChatResponse>>> getGroupChatRooms() {
-        MediatorLiveData<BaseResponse<List<GroupChatResponse>>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.getGroupChatRooms(), data::postValue);
-        return data;
+        return apiHelper.getGroupChatRooms();
     }
 
     public LiveData<BaseResponse<CreateChatroomResponse>> createChatRoom(CreateChatRoomRequest request) {
-        MediatorLiveData<BaseResponse<CreateChatroomResponse>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.createChatRoom(request), data::postValue);
-        return data;
+        return apiHelper.createChatRoom(request);
     }
 
     public LiveData<BaseResponse<JoinChatRoomResponse>> joinChatRoom(int chatroomId) {
@@ -159,15 +146,11 @@ public final class ConfigChatSocket {
     }
 
     public LiveData<BaseResponse<WebinarResponse>> getJoinedChatRooms() {
-        MediatorLiveData<BaseResponse<WebinarResponse>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.getJoinedChatRooms(), data::postValue);
-        return data;
+        return apiHelper.getJoinedChatRooms();
     }
 
     public LiveData<BaseResponse<MediaMessageResponse>> sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
-        MediatorLiveData<BaseResponse<MediaMessageResponse>> data = new MediatorLiveData<>();
-        data.addSource(apiHelper.sendMediaMessage(chatroomId, f, mediaType), data::postValue);
-        return data;
+        return apiHelper.sendMediaMessage(chatroomId, f, mediaType);
     }
 
     public void connect(Map<String, String> v) {

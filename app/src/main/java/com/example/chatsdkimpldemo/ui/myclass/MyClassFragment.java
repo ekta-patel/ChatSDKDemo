@@ -8,7 +8,9 @@ import com.example.chatsdkimpldemo.databinding.FragmentMyClassBinding;
 import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.chatroom.Chatroom;
+import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +27,27 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
         binding.cardView.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_createChatroomFragment));
         initAdapter();
 
-        observeData();
+        activityViewModel.getMyClassRooms().observe(getViewLifecycleOwner(), this::updateList);
 
-        activityViewModel.getOneToOneChatRooms();
+        observeMessage();
+    }
+
+    private void updateList(BaseResponse<MyClassResponse> response) {
+        switch (response.getStatus()) {
+            case LOADING:
+                showLoader();
+                break;
+            case SUCCESS:
+                dismissLoader();
+                this.responseList.clear();
+                this.responseList.addAll(response.getData().getChatrooms());
+                adapter.notifyDataSetChanged();
+                break;
+            case FAILURE:
+                dismissLoader();
+                showSnackbar(response.getThrowable().getMessage());
+                break;
+        }
     }
 
     private void initAdapter() {
@@ -37,23 +57,8 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
         binding.rvMyClass.setAdapter(adapter);
     }
 
-    private void observeData() {
-        activityViewModel.getOneToOneChatResponseLiveData().observe(getViewLifecycleOwner(), resList -> {
-            this.responseList.clear();
-            this.responseList.addAll(resList.getChatrooms());
-            adapter.notifyDataSetChanged();
-        });
-        activityViewModel.getError().observe(getViewLifecycleOwner(), e -> {
-            showSnackbar(e.getMessage());
-        });
-        activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean) {
-                showLoader();
-            } else {
-                dismissLoader();
-            }
-        });
-        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
+    private void observeMessage() {
+        activityViewModel.getMessage().observe(getViewLifecycleOwner(), message -> {
             if (message != null) {
                 for (Chatroom x :
                         responseList) {
@@ -63,7 +68,6 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
                         adapter.notifyItemChanged(index, x);
                     }
                 }
-
             }
         });
     }

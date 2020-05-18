@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="96dp" />
+            app:layout_constraintGuide_begin="72dp" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardView"

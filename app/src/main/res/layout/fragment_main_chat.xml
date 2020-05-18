@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="96dp" />
+            app:layout_constraintGuide_begin="72dp" />
 
         <com.google.android.material.card.MaterialCardView
             style="@style/CustomCardViewStyle"
@@ -93,7 +93,8 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toTopOf="@id/divider"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:stackFromEnd="true" />
+                    app:stackFromEnd="true"
+                    app:reverseLayout="false"/>
 
                 <View
                     android:id="@+id/divider"

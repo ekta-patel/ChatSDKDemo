@@ -10,7 +10,9 @@ import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
 import com.example.chatsdkimpldemo.ui.chatrooms.GroupChatViewModel;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.chatroom.Chatroom;
+import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +36,27 @@ public class WebinarFragment extends BaseFragment<FragmentWebinarBinding, GroupC
         binding.btnViewChatRoom.setOnClickListener((v) -> navController.navigate(R.id.groupChatRoomsFragment));
         initAdapter();
 
-        activityViewModel.getJoinedChatRooms();
+        activityViewModel.getJoinedChatRooms().observe(getViewLifecycleOwner(), this::updateList);
 
-        observeData();
+        observeMessage();
+    }
+
+    private void updateList(BaseResponse<WebinarResponse> response) {
+        switch (response.getStatus()) {
+            case LOADING:
+                showLoader();
+                break;
+            case SUCCESS:
+                dismissLoader();
+                this.responseList.clear();
+                this.responseList.addAll(response.getData().getChatrooms());
+                adapter.notifyDataSetChanged();
+                break;
+            case FAILURE:
+                dismissLoader();
+                showSnackbar(response.getThrowable().getMessage());
+                break;
+        }
     }
 
     private void initAdapter() {
@@ -46,23 +66,8 @@ public class WebinarFragment extends BaseFragment<FragmentWebinarBinding, GroupC
         binding.rvWebinar.setAdapter(adapter);
     }
 
-    private void observeData() {
-        activityViewModel.getJoinedChatRoomResponseLiveData().observe(getViewLifecycleOwner(), resList -> {
-            this.responseList.clear();
-            this.responseList.addAll(resList.getChatrooms());
-            adapter.notifyDataSetChanged();
-        });
-        activityViewModel.getError().observe(getViewLifecycleOwner(), e -> {
-            showSnackbar(e.getMessage());
-        });
-        activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean) {
-                showLoader();
-            } else {
-                dismissLoader();
-            }
-        });
-        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
+    private void observeMessage() {
+        activityViewModel.getMessage().observe(getViewLifecycleOwner(), message -> {
             if (message != null) {
                 for (Chatroom x :
                         responseList) {

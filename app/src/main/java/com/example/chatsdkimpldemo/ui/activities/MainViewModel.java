@@ -3,12 +3,12 @@ package com.example.chatsdkimpldemo.ui.activities;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.mychatlibrary.ConfigChatSocket;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -131,7 +131,7 @@ public class MainViewModel extends ViewModel {
     };
 
 
-    public void createDefaultChatSocket(Map<String, String> params) {
+    void createDefaultChatSocket() {
         try {
             Map<String, String> options = new HashMap<>();
             try {
@@ -140,7 +140,7 @@ public class MainViewModel extends ViewModel {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel").params(params).query(options).addChatListener(defaultChannelListener).build();
+            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel").query(options).addChatListener(defaultChannelListener).build();
         } catch (
                 URISyntaxException e) {
             e.printStackTrace();
@@ -148,18 +148,6 @@ public class MainViewModel extends ViewModel {
     }
 
     private MutableLiveData<Message> messageMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> _isLoading = new MutableLiveData<>();
-    private MediatorLiveData<DeleteChatRoomResponse> deleteChatRoomResponseMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<LeaveChatroomResponse> leaveChatroomResponseMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<MessagesResponseModel> messagesResponseModelMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<MyClassResponse> getOneToOneChatRoomsMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<List<GroupChatResponse>> getGroupChatRoomsMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<CreateChatroomResponse> createChatroomResponseMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<WebinarResponse> joinedChatroomResponseMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<JoinChatRoomResponse> joinChatroomResponseMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<MediaMessageResponse> mediaMessageResponseMediatorLiveData = new MediatorLiveData<>();
-    private MediatorLiveData<Throwable> error = new MediatorLiveData<>();
-
 
     public ConfigChatSocket getChatSocket() {
         return chatSocket;
@@ -173,172 +161,47 @@ public class MainViewModel extends ViewModel {
         chatSocket.disconnect();
     }
 
-    public void deleteChatroom(int chatRoomId) {
-        _isLoading.postValue(true);
-        deleteChatRoomResponseMediatorLiveData.addSource(chatSocket.deleteChatroom(chatRoomId), response -> {
-            if (response.getThrowable() == null) {
-                deleteChatRoomResponseMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<DeleteChatRoomResponse>> deleteChatroom(int chatRoomId) {
+        return chatSocket.deleteChatroom(chatRoomId);
     }
 
-    public void leaveChatroom(int chatRoomId) {
-        _isLoading.postValue(true);
-        leaveChatroomResponseMediatorLiveData.addSource(chatSocket.leaveChatroom(chatRoomId), response -> {
-            if (response.getThrowable() == null) {
-                leaveChatroomResponseMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<LeaveChatroomResponse>> leaveChatroom(int chatRoomId) {
+        return chatSocket.leaveChatroom(chatRoomId);
     }
 
-    public void getChatRoomMessages(int chatRoomId) {
-        _isLoading.postValue(true);
-        messagesResponseModelMediatorLiveData.addSource(chatSocket.getChatRoomMessages(chatRoomId), response -> {
-            if (response.getThrowable() == null) {
-                messagesResponseModelMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<MessagesResponseModel>> getChatRoomMessages(int chatRoomId) {
+        return chatSocket.getChatRoomMessages(chatRoomId);
     }
 
-    public void getUserMessages(int userId) {
-        _isLoading.postValue(true);
-        messagesResponseModelMediatorLiveData.addSource(chatSocket.getUserMessages(userId), response -> {
-            if (response.getThrowable() == null) {
-                messagesResponseModelMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<MessagesResponseModel>> getUserMessages(int userId) {
+        return chatSocket.getUserMessages(userId);
     }
 
-    public void getJoinedChatRooms() {
-        _isLoading.postValue(true);
-        joinedChatroomResponseMediatorLiveData.addSource(chatSocket.getJoinedChatRooms(), response -> {
-            if (response.getThrowable() == null) {
-                joinedChatroomResponseMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<WebinarResponse>> getJoinedChatRooms() {
+        return chatSocket.getJoinedChatRooms();
     }
 
-    public void getChatRooms() {
-        _isLoading.postValue(true);
-        getGroupChatRoomsMediatorLiveData.addSource(chatSocket.getGroupChatRooms(), response -> {
-            if (response.getThrowable() == null) {
-                getGroupChatRoomsMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<List<GroupChatResponse>>> getChatRooms() {
+        return chatSocket.getGroupChatRooms();
     }
 
-    public void createChatRoom(CreateChatRoomRequest request) {
-        _isLoading.postValue(true);
-        createChatroomResponseMediatorLiveData.addSource(chatSocket.createChatRoom(request), response -> {
-            if (response.getThrowable() == null) {
-                createChatroomResponseMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<CreateChatroomResponse>> createChatRoom(CreateChatRoomRequest request) {
+        return chatSocket.createChatRoom(request);
     }
 
-    public void joinChatRoom(int chatroomId) {
-        _isLoading.postValue(true);
-        joinChatroomResponseMediatorLiveData.addSource(chatSocket.joinChatRoom(chatroomId), response -> {
-            if (response.getThrowable() == null) {
-                joinChatroomResponseMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<JoinChatRoomResponse>> joinChatRoom(int chatroomId) {
+        return chatSocket.joinChatRoom(chatroomId);
     }
 
-    public void getOneToOneChatRooms() {
-        _isLoading.postValue(true);
-        getOneToOneChatRoomsMediatorLiveData.addSource(chatSocket.getOneToOneChatRooms(), response -> {
-            if (response.getThrowable() == null) {
-                getOneToOneChatRoomsMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<MyClassResponse>> getMyClassRooms() {
+        return chatSocket.getOneToOneChatRooms();
     }
 
-    public void sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
-        _isLoading.postValue(true);
-        mediaMessageResponseMediatorLiveData.addSource(chatSocket.sendMediaMessage(chatroomId, f, mediaType), response -> {
-            if (response.getThrowable() == null) {
-                mediaMessageResponseMediatorLiveData.postValue(response.getData());
-            } else {
-                error.postValue(response.getThrowable());
-            }
-            _isLoading.postValue(false);
-        });
+    public LiveData<BaseResponse<MediaMessageResponse>> sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
+        return chatSocket.sendMediaMessage(chatroomId, f, mediaType);
     }
 
-    public LiveData<MyClassResponse> getOneToOneChatResponseLiveData() {
-        return getOneToOneChatRoomsMediatorLiveData;
-    }
-
-    public LiveData<List<GroupChatResponse>> getGroupChatResponseLiveData() {
-        return getGroupChatRoomsMediatorLiveData;
-    }
-
-    public LiveData<CreateChatroomResponse> getCreateChatRoomResponseLiveData() {
-        return createChatroomResponseMediatorLiveData;
-    }
-
-    public LiveData<WebinarResponse> getJoinedChatRoomResponseLiveData() {
-        return joinedChatroomResponseMediatorLiveData;
-    }
-
-    public LiveData<JoinChatRoomResponse> getJoinChatRoomResponseLiveData() {
-        return joinChatroomResponseMediatorLiveData;
-    }
-
-    public LiveData<DeleteChatRoomResponse> getDeleteChatroomLiveData() {
-        return deleteChatRoomResponseMediatorLiveData;
-    }
-
-    public LiveData<LeaveChatroomResponse> getLeaveChatroomLiveData() {
-        return leaveChatroomResponseMediatorLiveData;
-    }
-
-    public LiveData<MessagesResponseModel> getMessageResponseLiveData() {
-        return messagesResponseModelMediatorLiveData;
-    }
-
-    public LiveData<Boolean> isLoading() {
-        return _isLoading;
-    }
-
-    public LiveData<Message> getMessageMutableLiveData() {
+    public LiveData<Message> getMessage() {
         return messageMutableLiveData;
     }
-
-    public LiveData<MediaMessageResponse> getMediaMessageResponseMediatorLiveData() {
-        return mediaMessageResponseMediatorLiveData;
-    }
-
-    public LiveData<Throwable> getError() {
-        return error;
-    }
-
 }

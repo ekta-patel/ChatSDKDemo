@@ -43,7 +43,10 @@ import com.example.chatsdkimpldemo.utils.Constants;
 import com.example.chatsdkimpldemo.utils.MarginItemDecorator;
 import com.example.chatsdkimpldemo.utils.Utilities;
 import com.example.mychatlibrary.ConfigChatSocket;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
+import com.example.mychatlibrary.data.models.response.messages.MediaMessageResponse;
 import com.example.mychatlibrary.data.models.response.messages.Message;
+import com.example.mychatlibrary.data.models.response.messages.MessagesResponseModel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -99,11 +102,23 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             if (b != null) {
                 mChatRoomId = b.getInt(Constants.BundleKeys.CHATROOM_ID);
                 if (b.getBoolean(Constants.BundleKeys.IS_GROUP)) {
-                    setHasOptionsMenu(true);
-                    activityViewModel.getChatRoomMessages(mChatRoomId);
+                    activityViewModel.getChatRoomMessages(mChatRoomId).observe(getViewLifecycleOwner(), this::updateList);
                 } else {
                     int mOtherUserId = b.getInt(Constants.BundleKeys.OTHER_USER_ID);
-                    activityViewModel.getUserMessages(mOtherUserId);
+                    activityViewModel.getUserMessages(mOtherUserId).observe(getViewLifecycleOwner(), this::updateList);
+                    if (b.getBoolean(Constants.BundleKeys.IS_FROM_SHARING)) {
+                        if (b.getBoolean(Constants.BundleKeys.IS_TEXT_SHARED)) {
+                            String text = b.getString(Constants.BundleKeys.SHARED_TEXT);
+                            if (!TextUtils.isEmpty(text)) {
+                                chatSocket.sendMessage(mChatRoomId, text);
+                            }
+                        } else {
+                            Uri uri = b.getParcelable(Constants.BundleKeys.SHARED_FILE_URI);
+                            if (Objects.equals(Objects.requireNonNull(uri).getScheme(), ContentResolver.SCHEME_CONTENT)) {
+                                sendMediaMessage(uri);
+                            }
+                        }
+                    }
                 }
                 binding.setUsername(b.containsKey(Constants.BundleKeys.CHATROOM_NAME) ? b.getString(Constants.BundleKeys.CHATROOM_NAME) : b.getString(Constants.BundleKeys.OTHER_USER_NAME));
             }
@@ -170,9 +185,41 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             return false;
         });
 
+        binding.rvMessages.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom < oldBottom) {
+                binding.rvMessages.postDelayed(() -> {
+                    if (adapter.getItemCount() >= 1) {
+                        binding.rvMessages.smoothScrollToPosition(adapter.getItemCount() - 1);
+                    }
+                }, 100);
+            }
+        });
+
         initAdapter();
 
         observeData();
+    }
+
+    private void updateList(BaseResponse<MessagesResponseModel> response) {
+        switch (response.getStatus()) {
+            case LOADING:
+                showLoader();
+                break;
+            case SUCCESS:
+                dismissLoader();
+                this.messageList.addAll(response.getData().getChatroom().getMessages());
+                adapter.notifyDataSetChanged();
+                if (adapter.getItemCount() >= 1) {
+                    binding.rvMessages.postDelayed(() -> {
+                        binding.rvMessages.smoothScrollToPosition(adapter.getItemCount() - 1);
+                    }, 100);
+                }
+                break;
+            case FAILURE:
+                dismissLoader();
+                showSnackbar(response.getThrowable().getMessage());
+                break;
+        }
     }
 
     @Override
@@ -242,45 +289,55 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
     }
 
     private void observeData() {
-        activityViewModel.getDeleteChatroomLiveData().observe(getViewLifecycleOwner(), deleteChatRoomResponse ->
-                {
-                    if (deleteChatRoomResponse.getStatus().equalsIgnoreCase("ok"))
-                        navController.navigateUp();
-                }
-        );
-        activityViewModel.getLeaveChatroomLiveData().observe(getViewLifecycleOwner(), leaveChatroomResponse -> {
-            if (leaveChatroomResponse.getSuccess().toLowerCase().contains("leave")) {
-                navController.navigateUp();
-            }
-        });
-        activityViewModel.getMessageResponseLiveData().observe(getViewLifecycleOwner(), res -> {
-            if (res != null) {
-                this.messageList.clear();
-                if (res.getChatroom().getMessages() != null) {
-                    this.messageList.addAll(res.getChatroom().getMessages());
-                    adapter.notifyDataSetChanged();
-                    if (adapter.getItemCount() >= 1) {
-                        binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
-                    }
-                }
-            }
-        });
-        activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean) {
-                showLoader();
-            } else {
-                dismissLoader();
-            }
-        });
-        activityViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), message -> {
+//        activityViewModel.getDeleteChatroomLiveData().observe(getViewLifecycleOwner(), deleteChatRoomResponse ->
+//                {
+//                    if (deleteChatRoomResponse.getStatus().equalsIgnoreCase("ok"))
+//                        navController.navigateUp();
+//                }
+//        );
+//        activityViewModel.getLeaveChatroomLiveData().observe(getViewLifecycleOwner(), leaveChatroomResponse -> {
+//            if (leaveChatroomResponse.getSuccess().toLowerCase().contains("leave")) {
+//                navController.navigateUp();
+//            }
+//        });
+//        activityViewModel.getMessageResponseLiveData().observe(getViewLifecycleOwner(), res -> {
+//            this.messageList.clear();
+//            if (res.getData().getChatroom().getMessages() != null) {
+//                this.messageList.addAll(res.getData().getChatroom().getMessages());
+//                adapter.notifyDataSetChanged();
+//                if (adapter.getItemCount() >= 1) {
+//                    binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
+//                }
+//            }
+//        });
+//        activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
+//            if (aBoolean) {
+//                showLoader();
+//            } else {
+//                dismissLoader();
+//            }
+//        });
+        activityViewModel.getMessage().observe(getViewLifecycleOwner(), message -> {
                     messageList.add(message);
                     adapter.notifyItemInserted(messageList.size());
-                    binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
+                    binding.rvMessages.postDelayed(() -> {
+                        binding.rvMessages.smoothScrollToPosition(adapter.getItemCount() - 1);
+                    }, 100);
                 }
         );
-        activityViewModel.getMediaMessageResponseMediatorLiveData().observe(getViewLifecycleOwner(), mediaMessageResponse -> {
-
-        });
+//        activityViewModel.getMediaMessageResponseMediatorLiveData().observe(getViewLifecycleOwner(), mediaMessageResponse -> {
+//
+//        });
+//        activityViewModel.getMessageResponseLiveData().observe(getViewLifecycleOwner(), res -> {
+//            this.messageList.clear();
+//            if (res.getData().getChatroom().getMessages() != null) {
+//                this.messageList.addAll(res.getData().getChatroom().getMessages());
+//                adapter.notifyDataSetChanged();
+//                if (adapter.getItemCount() >= 1) {
+//                    binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -360,9 +417,24 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             File f = Utilities.createFileForExtension(requireContext(), extension);
             FileOutputStream outputStream = new FileOutputStream(f);
             Utilities.copy(inputStream, outputStream);
-            activityViewModel.sendMediaMessage(mChatRoomId, f, MediaType.parse(Objects.requireNonNull(mimeType)));
+            activityViewModel.sendMediaMessage(mChatRoomId, f, MediaType.parse(Objects.requireNonNull(mimeType))).observe(getViewLifecycleOwner(), this::mediaMessageObserver);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void mediaMessageObserver(BaseResponse<MediaMessageResponse> response) {
+        switch (response.getStatus()) {
+            case LOADING:
+                showLoader();
+                break;
+            case SUCCESS:
+                dismissLoader();
+                break;
+            case FAILURE:
+                dismissLoader();
+                showSnackbar(response.getThrowable().getMessage());
+                break;
         }
     }
 

@@ -21,11 +21,11 @@
             app:srcCompat="@drawable/ic_back_two" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/ivUsername"
+            android:id="@+id/tvSelectMember"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Add Members"
+            android:text="Select Members"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:fontFamily="@font/montserrat_semibold"
@@ -34,11 +34,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvNext"
+            android:id="@+id/tvSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="next"
+            android:text="send"
             android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="12sp"
@@ -66,28 +66,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvSelectAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:text="SELECT ALL"
-                    android:textColor="#252426"
-                    android:textSize="12sp"
-                    app:fontFamily="@font/montserrat_bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvCreateChatroomUsers"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:orientation="vertical"
                     android:paddingTop="16dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvSelectAll" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

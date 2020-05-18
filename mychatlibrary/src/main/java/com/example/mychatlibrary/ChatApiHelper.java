@@ -1,12 +1,10 @@
 package com.example.mychatlibrary;
 
-import android.webkit.MimeTypeMap;
-
-import androidx.core.content.MimeTypeFilter;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
+import com.example.mychatlibrary.data.models.response.base.Status;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -43,24 +41,25 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<MyClassResponse>> getOneToOneChatRooms() {
         MutableLiveData<BaseResponse<MyClassResponse>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.getOneToOneChatRooms().enqueue(new Callback<BaseResponse<MyClassResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<MyClassResponse>> call, Response<BaseResponse<MyClassResponse>> response) {
                 BaseResponse<MyClassResponse> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<MyClassResponse>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -68,24 +67,25 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<List<GroupChatResponse>>> getGroupChatRooms() {
         MutableLiveData<BaseResponse<List<GroupChatResponse>>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.getGroupChatRooms().enqueue(new Callback<BaseResponse<List<GroupChatResponse>>>() {
             @Override
             public void onResponse(Call<BaseResponse<List<GroupChatResponse>>> call, Response<BaseResponse<List<GroupChatResponse>>> response) {
                 BaseResponse<List<GroupChatResponse>> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<List<GroupChatResponse>>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -93,24 +93,25 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<CreateChatroomResponse>> createChatRoom(CreateChatRoomRequest request) {
         MutableLiveData<BaseResponse<CreateChatroomResponse>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.createChatRoom(request).enqueue(new Callback<BaseResponse<CreateChatroomResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<CreateChatroomResponse>> call, Response<BaseResponse<CreateChatroomResponse>> response) {
                 BaseResponse<CreateChatroomResponse> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<CreateChatroomResponse>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -123,19 +124,19 @@ final class ChatApiHelper {
             public void onResponse(Call<BaseResponse<DeleteChatRoomResponse>> call, Response<BaseResponse<DeleteChatRoomResponse>> response) {
                 BaseResponse<DeleteChatRoomResponse> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<DeleteChatRoomResponse>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -148,19 +149,19 @@ final class ChatApiHelper {
             public void onResponse(Call<BaseResponse<WebinarResponse>> call, Response<BaseResponse<WebinarResponse>> response) {
                 BaseResponse<WebinarResponse> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<WebinarResponse>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -173,19 +174,19 @@ final class ChatApiHelper {
             public void onResponse(Call<BaseResponse<JoinChatRoomResponse>> call, Response<BaseResponse<JoinChatRoomResponse>> response) {
                 BaseResponse<JoinChatRoomResponse> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<JoinChatRoomResponse>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -198,19 +199,19 @@ final class ChatApiHelper {
             public void onResponse(Call<BaseResponse<LeaveChatroomResponse>> call, Response<BaseResponse<LeaveChatroomResponse>> response) {
                 BaseResponse<LeaveChatroomResponse> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<LeaveChatroomResponse>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -223,19 +224,19 @@ final class ChatApiHelper {
             public void onResponse(Call<BaseResponse<MessagesResponseModel>> call, Response<BaseResponse<MessagesResponseModel>> response) {
                 BaseResponse<MessagesResponseModel> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<MessagesResponseModel>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -243,24 +244,25 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<MessagesResponseModel>> getUserMessages(int userId) {
         MutableLiveData<BaseResponse<MessagesResponseModel>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.getUserMessages(userId).enqueue(new Callback<BaseResponse<MessagesResponseModel>>() {
             @Override
             public void onResponse(Call<BaseResponse<MessagesResponseModel>> call, Response<BaseResponse<MessagesResponseModel>> response) {
                 BaseResponse<MessagesResponseModel> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<MessagesResponseModel>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;
@@ -273,24 +275,24 @@ final class ChatApiHelper {
         String descriptionString = mediaType.type();
         RequestBody description =
                 RequestBody.create(descriptionString, MediaType.parse("text/plain"));
-        apiService.sendMediaMessage(chatRoomId,description, body).enqueue(new Callback<BaseResponse<MediaMessageResponse>>() {
+        apiService.sendMediaMessage(chatRoomId, description, body).enqueue(new Callback<BaseResponse<MediaMessageResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<MediaMessageResponse>> call, Response<BaseResponse<MediaMessageResponse>> response) {
                 BaseResponse<MediaMessageResponse> r = response.body();
                 if (r != null) {
-                    if (r.isStatus()) {
-                        data.postValue(response.body());
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
                     } else {
-                        data.postValue(new BaseResponse<>(new Throwable(r.getError())));
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
                     }
                 } else {
-                    data.postValue(new BaseResponse<>(new Throwable(response.message())));
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<BaseResponse<MediaMessageResponse>> call, Throwable t) {
-                data.postValue(new BaseResponse<>(t));
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });
         return data;

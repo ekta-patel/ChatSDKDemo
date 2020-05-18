@@ -16,7 +16,9 @@ import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
 import com.example.chatsdkimpldemo.ui.createchatroom.CreateChatroomViewModel;
 import com.example.chatsdkimpldemo.utils.Constants;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.chatroom.Chatroom;
+import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
 import com.example.mychatlibrary.data.models.response.user.User;
 
 import java.util.ArrayList;
@@ -42,7 +44,6 @@ public class SelectUsersFragment extends BaseFragment<FragmentSelectUsersBinding
         navController = Navigation.findNavController(view);
         changeLightStatusBar(false, requireActivity());
         intiAdapter();
-        observeData();
         binding.tvNext.setOnClickListener((v) ->
         {
             Selection<Chatroom> chatroomSelection = selectionTracker.getSelection();
@@ -59,7 +60,7 @@ public class SelectUsersFragment extends BaseFragment<FragmentSelectUsersBinding
                 showSnackbar("At least 2 members needed to create a group");
             }
         });
-        activityViewModel.getOneToOneChatRooms();
+        activityViewModel.getMyClassRooms().observe(getViewLifecycleOwner(), this::updateList);
         binding.tvSelectAll.setOnClickListener((v) -> selectionTracker.setItemsSelected(() -> responseList.listIterator(), true));
         binding.ivBack.setOnClickListener(v -> navController.navigateUp());
     }
@@ -79,22 +80,22 @@ public class SelectUsersFragment extends BaseFragment<FragmentSelectUsersBinding
         adapter.setSelectionTracker(selectionTracker);
     }
 
-    private void observeData() {
-        activityViewModel.getOneToOneChatResponseLiveData().observe(getViewLifecycleOwner(), resList -> {
-            this.responseList.clear();
-            this.responseList.addAll(resList.getChatrooms());
-            adapter.notifyDataSetChanged();
-        });
-        activityViewModel.getError().observe(getViewLifecycleOwner(), e -> {
-            showSnackbar(e.getMessage());
-        });
-        activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean) {
+    private void updateList(BaseResponse<MyClassResponse> response) {
+        switch (response.getStatus()) {
+            case LOADING:
                 showLoader();
-            } else {
+                break;
+            case SUCCESS:
                 dismissLoader();
-            }
-        });
+                this.responseList.clear();
+                this.responseList.addAll(response.getData().getChatrooms());
+                adapter.notifyDataSetChanged();
+                break;
+            case FAILURE:
+                dismissLoader();
+                showSnackbar(response.getThrowable().getMessage());
+                break;
+        }
     }
 
     @Override

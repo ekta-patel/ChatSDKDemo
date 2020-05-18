@@ -20,6 +20,8 @@ import com.example.chatsdkimpldemo.ui.createchatroom.CreateChatroomViewModel;
 import com.example.chatsdkimpldemo.utils.Constants;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomDataRequest;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
+import com.example.mychatlibrary.data.models.response.base.BaseResponse;
+import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.user.User;
 
 import java.util.ArrayList;
@@ -59,7 +61,6 @@ public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBin
         changeLightStatusBar(false, requireActivity());
         binding.setSize(selectedUserList.size());
         intiAdapter();
-        observeData();
         binding.tvCreate.setOnClickListener((v) -> {
             if (isValid()) {
                 CreateChatRoomRequest request = new CreateChatRoomRequest();
@@ -72,10 +73,35 @@ public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBin
                 }
                 dataRequest.setUserIds(iList);
                 request.setChatRoomDataRequest(dataRequest);
-                activityViewModel.createChatRoom(request);
+                activityViewModel.createChatRoom(request).observe(getViewLifecycleOwner(), this::handleResponse);
             }
         });
         binding.ivBack.setOnClickListener(v -> navController.navigateUp());
+    }
+
+    private void handleResponse(BaseResponse<CreateChatroomResponse> response) {
+        switch (response.getStatus()) {
+            case LOADING:
+                showLoader();
+                break;
+            case SUCCESS:
+                dismissLoader();
+                Map<String, String> m = new HashMap<>();
+                m.put("chatrooms", String.valueOf(response.getData().getChatroom().getId()));
+                activityViewModel.connectWebSocket(m);
+                NavOptions options = new NavOptions.Builder().setPopUpTo(R.id.homeFragment, false).build();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(Constants.BundleKeys.IS_GROUP, true);
+                bundle.putInt(Constants.BundleKeys.CHATROOM_ID, response.getData().getChatroom().getId());
+                bundle.putString(Constants.BundleKeys.CHATROOM_NAME, response.getData().getChatroom().getName());
+                NavDirections directions = SelectedUsersFragmentDirections.actionCreateChatroomNameFragmentToMainChatFragment(bundle);
+                navController.navigate(directions, options);
+                break;
+            case FAILURE:
+                dismissLoader();
+                showSnackbar(response.getThrowable().getMessage());
+                break;
+        }
     }
 
     private boolean isValid() {
@@ -94,31 +120,6 @@ public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBin
     private void intiAdapter() {
         adapter = new SelectedUsersAdapter(selectedUserList, SelectedUsersFragment.this);
         binding.rvSelectedUsers.setAdapter(adapter);
-    }
-
-    private void observeData() {
-        activityViewModel.getCreateChatRoomResponseLiveData().observe(getViewLifecycleOwner(), res -> {
-            Map<String, String> m = new HashMap<>();
-            m.put("chatrooms:", String.valueOf(res.getChatroom().getId()));
-            activityViewModel.connectWebSocket(m);
-            NavOptions options = new NavOptions.Builder().setPopUpTo(R.id.homeFragment, false).build();
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(Constants.BundleKeys.IS_GROUP, true);
-            bundle.putInt(Constants.BundleKeys.CHATROOM_ID, res.getChatroom().getId());
-            bundle.putString(Constants.BundleKeys.CHATROOM_NAME, res.getChatroom().getName());
-            NavDirections directions = SelectedUsersFragmentDirections.actionCreateChatroomNameFragmentToMainChatFragment(bundle);
-            navController.navigate(directions, options);
-        });
-        activityViewModel.getError().observe(getViewLifecycleOwner(), e -> {
-            showSnackbar(e.getMessage());
-        });
-        activityViewModel.isLoading().observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean) {
-                showLoader();
-            } else {
-                dismissLoader();
-            }
-        });
     }
 
     @Override
