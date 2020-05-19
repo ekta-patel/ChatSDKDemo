@@ -14,7 +14,6 @@ import com.example.chatsdkimpldemo.databinding.FragmentSelectUsersBinding;
 import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
-import com.example.chatsdkimpldemo.ui.createchatroom.CreateChatroomViewModel;
 import com.example.chatsdkimpldemo.utils.Constants;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.chatroom.Chatroom;
@@ -24,7 +23,7 @@ import com.example.mychatlibrary.data.models.response.user.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectUsersFragment extends BaseFragment<FragmentSelectUsersBinding, CreateChatroomViewModel> {
+public class SelectUsersFragment extends BaseFragment<FragmentSelectUsersBinding> {
 
 
     private List<Chatroom> responseList;
@@ -32,11 +31,6 @@ public class SelectUsersFragment extends BaseFragment<FragmentSelectUsersBinding
     private MainViewModel activityViewModel;
     private SelectionTracker<Chatroom> selectionTracker;
     private NavController navController;
-
-    @Override
-    protected Class<CreateChatroomViewModel> initViewModel() {
-        return CreateChatroomViewModel.class;
-    }
 
     @Override
     protected void initFragment() {

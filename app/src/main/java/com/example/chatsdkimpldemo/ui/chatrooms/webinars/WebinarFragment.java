@@ -9,7 +9,6 @@ import com.example.chatsdkimpldemo.databinding.FragmentWebinarBinding;
 import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
-import com.example.chatsdkimpldemo.ui.chatrooms.GroupChatViewModel;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.chatroom.Chatroom;
 import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
@@ -17,17 +16,12 @@ import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebinarFragment extends BaseFragment<FragmentWebinarBinding, GroupChatViewModel> {
+public class WebinarFragment extends BaseFragment<FragmentWebinarBinding> {
 
     private List<com.example.mychatlibrary.data.models.response.chatroom.Chatroom> responseList;
     private WebinarAdapter adapter;
     private NavController navController;
     private MainViewModel activityViewModel;
-
-    @Override
-    protected Class<GroupChatViewModel> initViewModel() {
-        return GroupChatViewModel.class;
-    }
 
     @Override
     protected void initFragment() {

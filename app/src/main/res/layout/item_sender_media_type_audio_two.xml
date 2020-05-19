@@ -18,13 +18,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.10" />
+            app:layout_constraintGuide_percent="0.15" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/messageSender"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="64dp"
             android:background="@drawable/rounded_rectangle_sender"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
@@ -36,7 +36,7 @@
             android:textColor="@android:color/black"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/profileReceiver"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/guideLineSender"
             app:layout_constraintTop_toTopOf="parent" />
@@ -49,15 +49,6 @@
             app:layout_constraintEnd_toEndOf="@id/messageSender"
             app:layout_constraintTop_toTopOf="@id/messageSender"
             app:srcCompat="@drawable/ic_download" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/profileReceiver"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:loadProfile="@{message.id}" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/MessageListTimeTextStyle"

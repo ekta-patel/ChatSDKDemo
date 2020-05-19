@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="message"
+            type="com.example.mychatlibrary.data.models.response.messages.Message" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLineSender"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.15" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="64dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideLineSender"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrierStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:barrierDirection="start" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrierEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:barrierDirection="end" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrierTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:barrierDirection="top" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrierBottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:barrierDirection="bottom" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="fitEnd"
+                    android:scaleX="-1"
+                    app:layout_constraintBottom_toBottomOf="@id/barrierTop"
+                    app:layout_constraintEnd_toEndOf="@id/barrierStart"
+                    app:layout_constraintStart_toStartOf="@id/barrierEnd"
+                    app:layout_constraintTop_toTopOf="@id/barrierBottom"
+                    app:srcCompat="@drawable/img_header" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivAttachment"
+                    android:layout_width="96dp"
+                    android:layout_height="72dp"
+                    android:layout_margin="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_attachment_chat" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvAttachmentName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:maxLines="2"
+                    android:text="@{message.attachment}"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    app:fontFamily="@font/montserrat_semibold"
+                    app:layout_constraintBottom_toTopOf="@id/tvAttachmentDescription"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivAttachment"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvAttachmentDescription"
+                    style="@style/MessageListTimeTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:maxLines="2"
+                    android:text="@{message.mimeType}"
+                    app:layout_constraintBottom_toBottomOf="@id/ivAttachment"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivAttachment"
+                    app:layout_constraintTop_toBottomOf="@id/tvAttachmentName" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/MessageListTimeTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/cardView"
+            app:layout_constraintTop_toBottomOf="@id/cardView"
+            app:setTime="@{message.updatedAt}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

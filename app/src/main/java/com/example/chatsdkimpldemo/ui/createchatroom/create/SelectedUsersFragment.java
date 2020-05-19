@@ -16,7 +16,6 @@ import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
 import com.example.chatsdkimpldemo.ui.base.RecyclerViewItemClickListener;
-import com.example.chatsdkimpldemo.ui.createchatroom.CreateChatroomViewModel;
 import com.example.chatsdkimpldemo.utils.Constants;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomDataRequest;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
@@ -30,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBinding, CreateChatroomViewModel> implements RecyclerViewItemClickListener<User> {
+public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBinding> implements RecyclerViewItemClickListener<User> {
 
     private List<User> selectedUserList;
     private SelectedUsersAdapter adapter;
@@ -47,11 +46,6 @@ public class SelectedUsersFragment extends BaseFragment<FragmentSelectedUsersBin
                 selectedUserList.addAll(users);
             }
         }
-    }
-
-    @Override
-    protected Class<CreateChatroomViewModel> initViewModel() {
-        return CreateChatroomViewModel.class;
     }
 
     @Override

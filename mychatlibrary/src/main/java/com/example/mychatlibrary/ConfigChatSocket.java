@@ -131,7 +131,7 @@ public final class ConfigChatSocket {
         return apiHelper.leaveChatRoom(chatRoomId);
     }
 
-    public MutableLiveData<BaseResponse<MyClassResponse>> getOneToOneChatRooms() {
+    public LiveData<BaseResponse<MyClassResponse>> getOneToOneChatRooms() {
         return apiHelper.getOneToOneChatRooms();
     }
 

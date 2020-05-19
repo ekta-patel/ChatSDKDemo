@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> {
+public class HomeFragment extends BaseFragment<FragmentHomeBinding> {
 
     @Override
     protected void initFragment() {
@@ -41,11 +41,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
     @Override
     protected int inflateView() {
         return R.layout.fragment_home;
-    }
-
-    @Override
-    protected Class<HomeViewModel> initViewModel() {
-        return HomeViewModel.class;
     }
 
 }

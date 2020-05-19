@@ -18,19 +18,13 @@ import com.example.mychatlibrary.data.models.response.user.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatroomDetailsFragment extends BaseFragment<FragmentChatroomDetailsBinding, ChatroomDetailsViewModel> {
+public class ChatroomDetailsFragment extends BaseFragment<FragmentChatroomDetailsBinding> {
 
     private NavController navController;
     private List<User> participantList;
     private List<Message> mediaList;
     private MediaAdapter mediaAdapter;
     private ParticipantAdapter participantAdapter;
-
-
-    @Override
-    protected Class initViewModel() {
-        return ChatroomDetailsViewModel.class;
-    }
 
     @Override
     protected void initFragment() {

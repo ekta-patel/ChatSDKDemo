@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25" />
+            app:layout_constraintGuide_percent="0.15" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/messageSender"
@@ -33,7 +33,7 @@
             android:layout_marginEnd="64dp"
             app:imageUrl="@{message.attachment}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintDimensionRatio="8:5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/guideLineSender"

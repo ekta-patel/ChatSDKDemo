@@ -64,7 +64,7 @@ import static android.content.Intent.ACTION_OPEN_DOCUMENT;
 import static android.content.Intent.CATEGORY_OPENABLE;
 import static android.content.Intent.EXTRA_ALLOW_MULTIPLE;
 
-public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, MainChatViewModel> implements RecyclerViewItemClickListener<Message> {
+public class MainChatFragment extends BaseFragment<FragmentMainChatBinding> implements RecyclerViewItemClickListener<Message> {
 
     private static final String TAG = MainChatFragment.class.getSimpleName();
 
@@ -85,11 +85,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             Log.e(TAG, "DOWNLOAD COMPLETED");
         }
     };
-
-    @Override
-    protected Class<MainChatViewModel> initViewModel() {
-        return MainChatViewModel.class;
-    }
+    private Bundle b;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -100,31 +96,16 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
         this.activityViewModel = ((MainActivity) requireActivity()).getViewModel();
         this.chatSocket = activityViewModel.getChatSocket();
         if (getArguments() != null) {
-            Bundle b = getArguments().getBundle("my_args");
-            if (b != null) {
-                mChatRoomId = b.getInt(Constants.BundleKeys.CHATROOM_ID);
-                if (b.getBoolean(Constants.BundleKeys.IS_GROUP)) {
-                    isGroup = true;
-                    activityViewModel.getChatRoomMessages(mChatRoomId).observe(getViewLifecycleOwner(), this::updateList);
-                } else {
-                    int mOtherUserId = b.getInt(Constants.BundleKeys.OTHER_USER_ID);
-                    activityViewModel.getUserMessages(mOtherUserId).observe(getViewLifecycleOwner(), this::updateList);
-                    if (b.getBoolean(Constants.BundleKeys.IS_FROM_SHARING)) {
-                        if (b.getBoolean(Constants.BundleKeys.IS_TEXT_SHARED)) {
-                            String text = b.getString(Constants.BundleKeys.SHARED_TEXT);
-                            if (!TextUtils.isEmpty(text)) {
-                                chatSocket.sendMessage(mChatRoomId, text);
-                            }
-                        } else {
-                            Uri uri = b.getParcelable(Constants.BundleKeys.SHARED_FILE_URI);
-                            if (Objects.equals(Objects.requireNonNull(uri).getScheme(), ContentResolver.SCHEME_CONTENT)) {
-                                sendMediaMessage(uri);
-                            }
-                        }
-                    }
-                }
-                binding.setUsername(b.containsKey(Constants.BundleKeys.CHATROOM_NAME) ? b.getString(Constants.BundleKeys.CHATROOM_NAME) : b.getString(Constants.BundleKeys.OTHER_USER_NAME));
+            b = requireArguments().getBundle("my_args");
+            mChatRoomId = Objects.requireNonNull(b).getInt(Constants.BundleKeys.CHATROOM_ID);
+            if (b.getBoolean(Constants.BundleKeys.IS_GROUP)) {
+                isGroup = true;
+                activityViewModel.getChatRoomMessages(mChatRoomId).observe(getViewLifecycleOwner(), this::updateList);
+            } else {
+                int mOtherUserId = b.getInt(Constants.BundleKeys.OTHER_USER_ID);
+                activityViewModel.getUserMessages(mOtherUserId).observe(getViewLifecycleOwner(), this::updateList);
             }
+            binding.setUsername(b.containsKey(Constants.BundleKeys.CHATROOM_NAME) ? b.getString(Constants.BundleKeys.CHATROOM_NAME) : b.getString(Constants.BundleKeys.OTHER_USER_NAME));
         }
 
         binding.btnSendMessage.setOnClickListener((v) -> {
@@ -220,9 +201,20 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                 this.messageList.addAll(response.getData().getChatroom().getMessages());
                 adapter.notifyDataSetChanged();
                 if (adapter.getItemCount() >= 1) {
-                    binding.rvMessages.postDelayed(() -> {
-                        binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
-                    }, 100);
+                    binding.rvMessages.postDelayed(() -> binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1), 10);
+                }
+                if (b.getBoolean(Constants.BundleKeys.IS_FROM_SHARING)) {
+                    if (b.getBoolean(Constants.BundleKeys.IS_TEXT_SHARED)) {
+                        String text = b.getString(Constants.BundleKeys.SHARED_TEXT);
+                        if (!TextUtils.isEmpty(text)) {
+                            chatSocket.sendMessage(mChatRoomId, text);
+                        }
+                    } else {
+                        Uri uri = b.getParcelable(Constants.BundleKeys.SHARED_FILE_URI);
+                        if (Objects.equals(Objects.requireNonNull(uri).getScheme(), ContentResolver.SCHEME_CONTENT)) {
+                            sendMediaMessage(uri);
+                        }
+                    }
                 }
                 break;
             case FAILURE:
@@ -330,6 +322,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
         activityViewModel.getMessage().observe(getViewLifecycleOwner(), message -> {
                     messageList.add(message);
                     adapter.notifyItemInserted(messageList.size() - 1);
+                    binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
                 }
         );
 //        activityViewModel.getMediaMessageResponseMediatorLiveData().observe(getViewLifecycleOwner(), mediaMessageResponse -> {
@@ -424,7 +417,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             File f = Utilities.createFileForExtension(requireContext(), extension);
             FileOutputStream outputStream = new FileOutputStream(f);
             Utilities.copy(inputStream, outputStream);
-//            activityViewModel.sendMediaMessage(mChatRoomId, f, MediaType.parse(Objects.requireNonNull(mimeType))).observe(getViewLifecycleOwner(), this::mediaMessageObserver);
+            activityViewModel.sendMediaMessage(mChatRoomId, f, MediaType.parse(Objects.requireNonNull(mimeType))).observe(getViewLifecycleOwner(), this::mediaMessageObserver);
         } catch (IOException e) {
             e.printStackTrace();
         }

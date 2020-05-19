@@ -1,7 +1,6 @@
 package com.example.chatsdkimpldemo.ui.chatrooms.all;
 
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -13,23 +12,17 @@ import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
 import com.example.chatsdkimpldemo.ui.base.RecyclerViewItemClickListener;
-import com.example.chatsdkimpldemo.ui.chatrooms.GroupChatViewModel;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupChatRoomsFragment extends BaseFragment<FragmentGroupChatBinding, GroupChatViewModel> implements RecyclerViewItemClickListener<GroupChatResponse> {
+public class GroupChatRoomsFragment extends BaseFragment<FragmentGroupChatBinding> implements RecyclerViewItemClickListener<GroupChatResponse> {
 
     private List<GroupChatResponse> responseList;
     private GroupChatAdapter adapter;
     private NavController navController;
     private MainViewModel activityViewModel;
-
-    @Override
-    protected Class<GroupChatViewModel> initViewModel() {
-        return GroupChatViewModel.class;
-    }
 
     @Override
     protected void initFragment() {

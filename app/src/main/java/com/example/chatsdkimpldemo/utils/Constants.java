@@ -30,7 +30,8 @@ public final class Constants {
 
         IMAGE("image"),
         VIDEO("video"),
-        AUDIO("audio");
+        AUDIO("audio"),
+        DOCUMENT("application");
         private String value;
 
         MediaIdentifier(String value) {
@@ -47,14 +48,18 @@ public final class Constants {
         SENDER_TYPE2(2),
         RECEIVER_TYPE1(3),
         RECEIVER_TYPE2(4),
-        SENDER_MEDIA_TYPE1(5),
-        SENDER_MEDIA_TYPE2(6),
-        RECEIVER_MEDIA_TYPE1(7),
-        RECEIVER_MEDIA_TYPE2(8),
+        SENDER_MEDIA_TYPE_IV1(5),
+        SENDER_MEDIA_TYPE_IV2(6),
+        RECEIVER_MEDIA_TYPE_IV1(7),
+        RECEIVER_MEDIA_TYPE_IV2(8),
         SENDER_MEDIA_DOCTYPE1(9),
         SENDER_MEDIA_DOCTYPE2(10),
         RECEIVER_MEDIA_DOCTYPE1(11),
-        RECEIVER_MEDIA_DOCTYPE2(12);
+        RECEIVER_MEDIA_DOCTYPE2(12),
+        SENDER_MEDIA_AUDIO1(13),
+        SENDER_MEDIA_AUDIO2(14),
+        RECEIVER_MEDIA_AUDIO1(15),
+        RECEIVER_MEDIA_AUDIO2(16);
 
         private int value;
 

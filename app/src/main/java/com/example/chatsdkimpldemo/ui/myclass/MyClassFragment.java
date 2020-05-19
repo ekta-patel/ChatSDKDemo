@@ -15,7 +15,7 @@ import com.example.mychatlibrary.data.models.response.myclass.MyClassResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClassViewModel> {
+public class MyClassFragment extends BaseFragment<FragmentMyClassBinding> {
 
     private List<Chatroom> responseList;
     private MyClassAdapter adapter;
@@ -77,9 +77,5 @@ public class MyClassFragment extends BaseFragment<FragmentMyClassBinding, MyClas
         return R.layout.fragment_my_class;
     }
 
-    @Override
-    protected Class<MyClassViewModel> initViewModel() {
-        return MyClassViewModel.class;
-    }
 
 }

@@ -19,7 +19,6 @@ import com.example.chatsdkimpldemo.databinding.FragmentSelectUsersForShareBindin
 import com.example.chatsdkimpldemo.ui.activities.MainActivity;
 import com.example.chatsdkimpldemo.ui.activities.MainViewModel;
 import com.example.chatsdkimpldemo.ui.base.BaseFragment;
-import com.example.chatsdkimpldemo.ui.createchatroom.CreateChatroomViewModel;
 import com.example.chatsdkimpldemo.utils.Constants;
 import com.example.mychatlibrary.data.models.response.chatroom.Chatroom;
 import com.example.mychatlibrary.data.models.response.user.User;
@@ -28,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SelectUsersForShareFragment extends BaseFragment<FragmentSelectUsersForShareBinding, CreateChatroomViewModel> {
+public class SelectUsersForShareFragment extends BaseFragment<FragmentSelectUsersForShareBinding> {
 
     private List<Chatroom> responseList;
     private SelectUsersForShareAdapter adapter;
@@ -49,11 +48,6 @@ public class SelectUsersForShareFragment extends BaseFragment<FragmentSelectUser
         } else {
             uri = b.getParcelable(Constants.BundleKeys.SHARED_FILE_URI);
         }
-    }
-
-    @Override
-    protected Class<CreateChatroomViewModel> initViewModel() {
-        return CreateChatroomViewModel.class;
     }
 
     @Override

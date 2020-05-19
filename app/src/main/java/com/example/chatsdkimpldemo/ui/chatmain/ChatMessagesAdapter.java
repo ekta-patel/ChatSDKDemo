@@ -14,12 +14,16 @@ import com.example.chatsdkimpldemo.databinding.ItemReceiveMediaTypeIvBinding;
 import com.example.chatsdkimpldemo.databinding.ItemReceiveMediaTypeIvTwoBinding;
 import com.example.chatsdkimpldemo.databinding.ItemReceiveMessageBinding;
 import com.example.chatsdkimpldemo.databinding.ItemReceiveMessageTwoBinding;
-import com.example.chatsdkimpldemo.databinding.ItemReceiverMediaTypeOtherBinding;
-import com.example.chatsdkimpldemo.databinding.ItemReceiverMediaTypeOtherTwoBinding;
+import com.example.chatsdkimpldemo.databinding.ItemReceiverMediaTypeAudioBinding;
+import com.example.chatsdkimpldemo.databinding.ItemReceiverMediaTypeAudioTwoBinding;
+import com.example.chatsdkimpldemo.databinding.ItemReceiverMediaTypeDocBinding;
+import com.example.chatsdkimpldemo.databinding.ItemReceiverMediaTypeDocTwoBinding;
+import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTypeAudioBinding;
+import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTypeAudioTwoBinding;
+import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTypeDocBinding;
+import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTypeDocTwoBinding;
 import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTypeIvBinding;
 import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTypeIvTwoBinding;
-import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTypeOtherBinding;
-import com.example.chatsdkimpldemo.databinding.ItemSenderMediaTypeOtherTwoBinding;
 import com.example.chatsdkimpldemo.databinding.ItemSenderMessageBinding;
 import com.example.chatsdkimpldemo.databinding.ItemSenderMessageTwoBinding;
 import com.example.chatsdkimpldemo.ui.base.RecyclerViewItemClickListener;
@@ -53,30 +57,42 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_TYPE2.getValue()) {
             ItemReceiveMessageTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receive_message_two, parent, false);
             return new Receiver2ViewHolder(binding, listener);
-        } else if (viewType == Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE1.getValue()) {
+        } else if (viewType == Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE_IV1.getValue()) {
             ItemSenderMediaTypeIvBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_type_iv, parent, false);
             return new SenderMediaViewHolder(binding, listener);
-        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE1.getValue()) {
+        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE_IV1.getValue()) {
             ItemReceiveMediaTypeIvBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receive_media_type_iv, parent, false);
             return new ReceiverMediaViewHolder(binding, listener);
-        } else if (viewType == Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE2.getValue()) {
+        } else if (viewType == Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE_IV2.getValue()) {
             ItemSenderMediaTypeIvTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_type_iv_two, parent, false);
             return new SenderMedia2ViewHolder(binding, listener);
-        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE2.getValue()) {
+        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE_IV2.getValue()) {
             ItemReceiveMediaTypeIvTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receive_media_type_iv_two, parent, false);
             return new ReceiverMedia2ViewHolder(binding, listener);
-        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE1.getValue()) {
-            ItemReceiverMediaTypeOtherBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receiver_media_type_other, parent, false);
-            return new ReceiverOtherMediaViewHolder(binding, listener);
-        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE2.getValue()) {
-            ItemReceiverMediaTypeOtherTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receiver_media_type_other_two, parent, false);
-            return new ReceiverOtherMedia2ViewHolder(binding, listener);
+        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_AUDIO1.getValue()) {
+            ItemReceiverMediaTypeAudioBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receiver_media_type_audio, parent, false);
+            return new ReceiverAudioMediaViewHolder(binding, listener);
+        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_AUDIO2.getValue()) {
+            ItemReceiverMediaTypeAudioTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receiver_media_type_audio_two, parent, false);
+            return new ReceiverAudioMedia2ViewHolder(binding, listener);
+        } else if (viewType == Constants.ViewHolderIdentifier.SENDER_MEDIA_AUDIO1.getValue()) {
+            ItemSenderMediaTypeAudioBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_type_audio, parent, false);
+            return new SenderAudioMediaViewHolder(binding, listener);
+        } else if (viewType == Constants.ViewHolderIdentifier.SENDER_MEDIA_AUDIO2.getValue()) {
+            ItemSenderMediaTypeAudioTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_type_audio_two, parent, false);
+            return new SenderAudioMedia2ViewHolder(binding, listener);
         } else if (viewType == Constants.ViewHolderIdentifier.SENDER_MEDIA_DOCTYPE1.getValue()) {
-            ItemSenderMediaTypeOtherBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_type_other, parent, false);
-            return new SenderOtherMediaViewHolder(binding, listener);
+            ItemSenderMediaTypeDocBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_type_doc, parent, false);
+            return new SenderDocMediaViewHolder(binding, listener);
         } else if (viewType == Constants.ViewHolderIdentifier.SENDER_MEDIA_DOCTYPE2.getValue()) {
-            ItemSenderMediaTypeOtherTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_type_other_two, parent, false);
-            return new SenderOtherMedia2ViewHolder(binding, listener);
+            ItemSenderMediaTypeDocTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_sender_media_type_doc_two, parent, false);
+            return new SenderDocMedia2ViewHolder(binding, listener);
+        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE1.getValue()) {
+            ItemReceiverMediaTypeDocBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receiver_media_type_doc, parent, false);
+            return new ReceiverDocMediaViewHolder(binding, listener);
+        } else if (viewType == Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE2.getValue()) {
+            ItemReceiverMediaTypeDocTwoBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_receiver_media_type_doc_two, parent, false);
+            return new ReceiverDocMedia2ViewHolder(binding, listener);
         }
         //Redundant
         else {
@@ -103,17 +119,26 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((SenderMedia2ViewHolder) holder).bind(messageList.get(position));
         } else if (holder instanceof ReceiverMedia2ViewHolder) {
             ((ReceiverMedia2ViewHolder) holder).bind(messageList.get(position));
-        } else if (holder instanceof SenderOtherMediaViewHolder) {
-            ((SenderOtherMediaViewHolder) holder).bind(messageList.get(position));
-        } else if (holder instanceof SenderOtherMedia2ViewHolder) {
-            ((SenderOtherMedia2ViewHolder) holder).bind(messageList.get(position));
-        } else if (holder instanceof ReceiverOtherMediaViewHolder) {
-            ((ReceiverOtherMediaViewHolder) holder).bind(messageList.get(position));
-        } else if (holder instanceof ReceiverOtherMedia2ViewHolder) {
-            ((ReceiverOtherMedia2ViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof SenderAudioMediaViewHolder) {
+            ((SenderAudioMediaViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof SenderAudioMedia2ViewHolder) {
+            ((SenderAudioMedia2ViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof ReceiverAudioMediaViewHolder) {
+            ((ReceiverAudioMediaViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof ReceiverAudioMedia2ViewHolder) {
+            ((ReceiverAudioMedia2ViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof ReceiverDocMediaViewHolder) {
+            ((ReceiverDocMediaViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof ReceiverDocMedia2ViewHolder) {
+            ((ReceiverDocMedia2ViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof SenderDocMediaViewHolder) {
+            ((SenderDocMediaViewHolder) holder).bind(messageList.get(position));
+        } else if (holder instanceof SenderDocMedia2ViewHolder) {
+            ((SenderDocMedia2ViewHolder) holder).bind(messageList.get(position));
         }
     }
 
+    //3 is currentUserId
     @Override
     public int getItemViewType(int position) {
         Message m = messageList.get(position);
@@ -134,7 +159,9 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         //Redundant
                         if (!TextUtils.isEmpty(messageList.get(position).getMediaType())) {
                             if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.IMAGE.getValue()) || messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.VIDEO.getValue())) {
-                                return Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE2.getValue();
+                                return Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE_IV2.getValue();
+                            } else if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.AUDIO.getValue())) {
+                                return Constants.ViewHolderIdentifier.SENDER_MEDIA_AUDIO2.getValue();
                             } else {
                                 return Constants.ViewHolderIdentifier.SENDER_MEDIA_DOCTYPE2.getValue();
                             }
@@ -145,19 +172,23 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         //Redundant
                         if (!TextUtils.isEmpty(messageList.get(position).getMediaType())) {
                             if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.IMAGE.getValue()) || messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.VIDEO.getValue())) {
-                                return Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE1.getValue();
+                                return Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE_IV1.getValue();
+                            } else if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.AUDIO.getValue())) {
+                                return Constants.ViewHolderIdentifier.SENDER_MEDIA_AUDIO1.getValue();
                             } else {
-                                return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE1.getValue();
+                                return Constants.ViewHolderIdentifier.SENDER_MEDIA_DOCTYPE1.getValue();
                             }
                         } else {
-                            return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE1.getValue();
+                            return Constants.ViewHolderIdentifier.SENDER_MEDIA_DOCTYPE1.getValue();
                         }
                     }
                 } else {
                     //Redundant
                     if (!TextUtils.isEmpty(messageList.get(position).getMediaType())) {
                         if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.IMAGE.getValue()) || messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.VIDEO.getValue())) {
-                            return Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE1.getValue();
+                            return Constants.ViewHolderIdentifier.SENDER_MEDIA_TYPE_IV1.getValue();
+                        } else if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.AUDIO.getValue())) {
+                            return Constants.ViewHolderIdentifier.SENDER_MEDIA_AUDIO1.getValue();
                         } else {
                             return Constants.ViewHolderIdentifier.SENDER_MEDIA_DOCTYPE1.getValue();
                         }
@@ -169,7 +200,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else {
             if (TextUtils.isEmpty(m.getAttachment())) {
                 if (position != 0) {
-                    if (messageList.get(position - 1).getUserId() != 3) {
+                    if (messageList.get(position - 1).getUserId() == messageList.get(position).getUserId()) {
                         return Constants.ViewHolderIdentifier.RECEIVER_TYPE2.getValue();
                     } else {
                         return Constants.ViewHolderIdentifier.RECEIVER_TYPE1.getValue();
@@ -179,11 +210,13 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             } else {
                 if (position != 0) {
-                    if (messageList.get(position - 1).getUserId() == 3) {
+                    if (messageList.get(position - 1).getUserId() == messageList.get(position).getUserId()) {
                         //Redundant if and its else remove when db is truncated
                         if (!TextUtils.isEmpty(messageList.get(position).getMediaType())) {
                             if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.IMAGE.getValue()) || messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.VIDEO.getValue())) {
-                                return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE2.getValue();
+                                return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE_IV2.getValue();
+                            } else if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.AUDIO.getValue())) {
+                                return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_AUDIO2.getValue();
                             } else {
                                 return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE2.getValue();
                             }
@@ -194,7 +227,9 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         //Redundant
                         if (!TextUtils.isEmpty(messageList.get(position).getMediaType())) {
                             if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.IMAGE.getValue()) || messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.VIDEO.getValue())) {
-                                return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE1.getValue();
+                                return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE_IV1.getValue();
+                            } else if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.AUDIO.getValue())) {
+                                return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_AUDIO1.getValue();
                             } else {
                                 return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE1.getValue();
                             }
@@ -206,7 +241,9 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     //Redundant
                     if (!TextUtils.isEmpty(messageList.get(position).getMediaType())) {
                         if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.IMAGE.getValue()) || messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.VIDEO.getValue())) {
-                            return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE1.getValue();
+                            return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_TYPE_IV1.getValue();
+                        } else if (messageList.get(position).getMediaType().equalsIgnoreCase(Constants.MediaIdentifier.AUDIO.getValue())) {
+                            return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_AUDIO1.getValue();
                         } else {
                             return Constants.ViewHolderIdentifier.RECEIVER_MEDIA_DOCTYPE1.getValue();
                         }
@@ -407,12 +444,12 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    static class SenderOtherMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class SenderAudioMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ItemSenderMediaTypeOtherBinding binding;
+        private ItemSenderMediaTypeAudioBinding binding;
         private RecyclerViewItemClickListener<Message> listener;
 
-        SenderOtherMediaViewHolder(ItemSenderMediaTypeOtherBinding binding, RecyclerViewItemClickListener<Message> listener) {
+        SenderAudioMediaViewHolder(ItemSenderMediaTypeAudioBinding binding, RecyclerViewItemClickListener<Message> listener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
@@ -430,12 +467,12 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    static class ReceiverOtherMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ReceiverAudioMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ItemReceiverMediaTypeOtherBinding binding;
+        private ItemReceiverMediaTypeAudioBinding binding;
         private RecyclerViewItemClickListener<Message> listener;
 
-        ReceiverOtherMediaViewHolder(ItemReceiverMediaTypeOtherBinding binding, RecyclerViewItemClickListener<Message> listener) {
+        ReceiverAudioMediaViewHolder(ItemReceiverMediaTypeAudioBinding binding, RecyclerViewItemClickListener<Message> listener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
@@ -453,12 +490,12 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    static class ReceiverOtherMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ReceiverAudioMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ItemReceiverMediaTypeOtherTwoBinding binding;
+        private ItemReceiverMediaTypeAudioTwoBinding binding;
         private RecyclerViewItemClickListener<Message> listener;
 
-        ReceiverOtherMedia2ViewHolder(ItemReceiverMediaTypeOtherTwoBinding binding, RecyclerViewItemClickListener<Message> listener) {
+        ReceiverAudioMedia2ViewHolder(ItemReceiverMediaTypeAudioTwoBinding binding, RecyclerViewItemClickListener<Message> listener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
@@ -476,11 +513,11 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    static class SenderOtherMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ItemSenderMediaTypeOtherTwoBinding binding;
+    static class SenderAudioMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ItemSenderMediaTypeAudioTwoBinding binding;
         private RecyclerViewItemClickListener<Message> listener;
 
-        SenderOtherMedia2ViewHolder(ItemSenderMediaTypeOtherTwoBinding binding, RecyclerViewItemClickListener<Message> listener) {
+        SenderAudioMedia2ViewHolder(ItemSenderMediaTypeAudioTwoBinding binding, RecyclerViewItemClickListener<Message> listener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
@@ -497,5 +534,97 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
         }
     }
+
+    static class SenderDocMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private ItemSenderMediaTypeDocBinding binding;
+        private RecyclerViewItemClickListener<Message> listener;
+
+        SenderDocMediaViewHolder(ItemSenderMediaTypeDocBinding binding, RecyclerViewItemClickListener<Message> listener) {
+            super(binding.getRoot());
+            this.binding = binding;
+            this.listener = listener;
+            itemView.setOnClickListener(this);
+        }
+
+        void bind(Message m) {
+            binding.setMessage(m);
+            binding.executePendingBindings();
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+        }
+    }
+
+    static class ReceiverDocMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private ItemReceiverMediaTypeDocBinding binding;
+        private RecyclerViewItemClickListener<Message> listener;
+
+        ReceiverDocMediaViewHolder(ItemReceiverMediaTypeDocBinding binding, RecyclerViewItemClickListener<Message> listener) {
+            super(binding.getRoot());
+            this.binding = binding;
+            this.listener = listener;
+            itemView.setOnClickListener(this);
+        }
+
+        void bind(Message m) {
+            binding.setMessage(m);
+            binding.executePendingBindings();
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+        }
+    }
+
+    static class ReceiverDocMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private ItemReceiverMediaTypeDocTwoBinding binding;
+        private RecyclerViewItemClickListener<Message> listener;
+
+        ReceiverDocMedia2ViewHolder(ItemReceiverMediaTypeDocTwoBinding binding, RecyclerViewItemClickListener<Message> listener) {
+            super(binding.getRoot());
+            this.binding = binding;
+            this.listener = listener;
+            itemView.setOnClickListener(this);
+        }
+
+        void bind(Message m) {
+            binding.setMessage(m);
+            binding.executePendingBindings();
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+        }
+    }
+
+    static class SenderDocMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private ItemSenderMediaTypeDocTwoBinding binding;
+        private RecyclerViewItemClickListener<Message> listener;
+
+        SenderDocMedia2ViewHolder(ItemSenderMediaTypeDocTwoBinding binding, RecyclerViewItemClickListener<Message> listener) {
+            super(binding.getRoot());
+            this.binding = binding;
+            this.listener = listener;
+            itemView.setOnClickListener(this);
+        }
+
+        void bind(Message m) {
+            binding.setMessage(m);
+            binding.executePendingBindings();
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+        }
+    }
+
 
 }

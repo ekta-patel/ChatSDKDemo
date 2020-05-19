@@ -13,15 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
-public abstract class BaseFragment<T extends ViewDataBinding, V extends ViewModel> extends Fragment {
+public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment {
 
     protected T binding;
-    protected V viewModel;
     protected View view;
     private ProgressDialog progressDialog;
 
@@ -29,7 +26,6 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends ViewMode
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, inflateView(), container, false);
-        viewModel = new ViewModelProvider(this).get(initViewModel());
         view = binding.getRoot();
         return view;
     }
@@ -39,8 +35,6 @@ public abstract class BaseFragment<T extends ViewDataBinding, V extends ViewMode
         super.onViewCreated(view, savedInstanceState);
         initFragment();
     }
-
-    protected abstract Class<V> initViewModel();
 
     protected abstract void initFragment();
 

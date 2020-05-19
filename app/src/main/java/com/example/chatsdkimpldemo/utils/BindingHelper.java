@@ -6,6 +6,8 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.databinding.BindingAdapter;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,7 +18,7 @@ public class BindingHelper {
     @BindingAdapter({"imageUrl"})
     public static void loadImage(AppCompatImageView view, String imageUrl) {
         String x = "http://13.235.232.157" + imageUrl;
-        Glide.with(view.getContext()).load(x).centerCrop().into(view);
+        Glide.with(view.getContext()).load(x).transform(new CenterCrop(), new RoundedCorners(16)).into(view);
     }
 
     @BindingAdapter({"loadProfile"})
