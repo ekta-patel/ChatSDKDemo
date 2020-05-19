@@ -1,10 +1,13 @@
 package com.example.mychatlibrary;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.base.Status;
+import com.example.mychatlibrary.data.models.response.chatroomdetails.ChatroomDetailsResponseModel;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -30,11 +33,12 @@ import retrofit2.Response;
 final class ChatApiHelper {
 
     private static ChatApiHelper INSTANCE;
-    private ApiService apiService = ApiClient.getApiService();
+    private static ApiService apiService;
 
-    static ChatApiHelper getInstance() {
+    static ChatApiHelper getInstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = new ChatApiHelper();
+            apiService = new ApiClient(context).getApiService();
         }
         return INSTANCE;
     }
@@ -119,6 +123,7 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<DeleteChatRoomResponse>> deleteChatRoom(int chatRoomId) {
         MutableLiveData<BaseResponse<DeleteChatRoomResponse>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.deleteChatRoom(chatRoomId).enqueue(new Callback<BaseResponse<DeleteChatRoomResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<DeleteChatRoomResponse>> call, Response<BaseResponse<DeleteChatRoomResponse>> response) {
@@ -144,6 +149,7 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<WebinarResponse>> getJoinedChatRooms() {
         MutableLiveData<BaseResponse<WebinarResponse>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.getJoinedChatRooms().enqueue(new Callback<BaseResponse<WebinarResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<WebinarResponse>> call, Response<BaseResponse<WebinarResponse>> response) {
@@ -169,6 +175,7 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<JoinChatRoomResponse>> joinChatRoom(int chatroomId) {
         MutableLiveData<BaseResponse<JoinChatRoomResponse>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.joinChatRoom(chatroomId).enqueue(new Callback<BaseResponse<JoinChatRoomResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<JoinChatRoomResponse>> call, Response<BaseResponse<JoinChatRoomResponse>> response) {
@@ -194,6 +201,7 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<LeaveChatroomResponse>> leaveChatRoom(int chatRoomId) {
         MutableLiveData<BaseResponse<LeaveChatroomResponse>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.leaveChatRoom(chatRoomId).enqueue(new Callback<BaseResponse<LeaveChatroomResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<LeaveChatroomResponse>> call, Response<BaseResponse<LeaveChatroomResponse>> response) {
@@ -219,6 +227,7 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<MessagesResponseModel>> getChatRoomMessages(int chatRoomId) {
         MutableLiveData<BaseResponse<MessagesResponseModel>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         apiService.getChatRoomMessages(chatRoomId).enqueue(new Callback<BaseResponse<MessagesResponseModel>>() {
             @Override
             public void onResponse(Call<BaseResponse<MessagesResponseModel>> call, Response<BaseResponse<MessagesResponseModel>> response) {
@@ -270,6 +279,7 @@ final class ChatApiHelper {
 
     MutableLiveData<BaseResponse<MediaMessageResponse>> sendMediaMessage(int chatRoomId, File f, MediaType mediaType) {
         MutableLiveData<BaseResponse<MediaMessageResponse>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
         RequestBody requestFile = RequestBody.create(f, mediaType);
         MultipartBody.Part body = MultipartBody.Part.createFormData("message[file]", f.getName(), requestFile);
         String descriptionString = mediaType.type();
@@ -292,6 +302,32 @@ final class ChatApiHelper {
 
             @Override
             public void onFailure(Call<BaseResponse<MediaMessageResponse>> call, Throwable t) {
+                data.postValue(new BaseResponse<>(Status.FAILURE, t));
+            }
+        });
+        return data;
+    }
+
+    MutableLiveData<BaseResponse<ChatroomDetailsResponseModel>> getChatroomDetails(int chatRoomId) {
+        MutableLiveData<BaseResponse<ChatroomDetailsResponseModel>> data = new MutableLiveData<>();
+        data.postValue(new BaseResponse<>(Status.LOADING, null));
+        apiService.getChatroomDetails(chatRoomId).enqueue(new Callback<BaseResponse<ChatroomDetailsResponseModel>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<ChatroomDetailsResponseModel>> call, Response<BaseResponse<ChatroomDetailsResponseModel>> response) {
+                BaseResponse<ChatroomDetailsResponseModel> r = response.body();
+                if (r != null) {
+                    if (r.isSuccess()) {
+                        data.postValue(new BaseResponse<>(Status.SUCCESS, r.getData()));
+                    } else {
+                        data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(r.getError())));
+                    }
+                } else {
+                    data.postValue(new BaseResponse<>(Status.FAILURE, new Throwable(response.message())));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<ChatroomDetailsResponseModel>> call, Throwable t) {
                 data.postValue(new BaseResponse<>(Status.FAILURE, t));
             }
         });

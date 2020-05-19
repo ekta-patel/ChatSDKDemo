@@ -1,5 +1,7 @@
 package com.example.mychatlibrary;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,6 +12,7 @@ import com.example.mychatlibrary.actioncables.Consumer;
 import com.example.mychatlibrary.actioncables.Subscription;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
+import com.example.mychatlibrary.data.models.response.chatroomdetails.ChatroomDetailsResponseModel;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -32,15 +35,16 @@ import okhttp3.MediaType;
 public final class ConfigChatSocket {
 
     private Consumer _Consumer;
-    private static volatile ConfigChatSocket INSTANCE;
-    private Builder builder;
+    private volatile ConfigChatSocket INSTANCE;
+    private ChatSocketBuilder builder;
+    private Context context;
     private Subscription subscriptionChat;
     private ChatApiHelper apiHelper;
 
-    private ConfigChatSocket(Builder builder) throws URISyntaxException {
+    ConfigChatSocket(ChatSocketBuilder builder, Context context) throws URISyntaxException {
         this.builder = builder;
-        this.apiHelper = ChatApiHelper.getInstance();
-        initConfig(builder.baseUrl, builder.query, builder.headers);
+        this.apiHelper = ChatApiHelper.getInstance(context);
+        initConfig(builder.getBaseUrl(), builder.getQuery(), builder.getHeaders());
     }
 
     private void initConfig(String baseUrl, Map<String, String> query, Map<String, String> headers) throws URISyntaxException {
@@ -55,12 +59,13 @@ public final class ConfigChatSocket {
         _Consumer = ActionCable.INSTANCE.createConsumer(uri, consumerOptions);
     }
 
-    private void initSubscription(String channelName, Map<String, ?> params, final ChatCallback callback) {
+    private void initSubscription(String channelName, Map<String, ?> params, final ChatSocketBuilder.ChatCallback callback) {
         Channel bookingIdChannel;
         if (params != null) {
             bookingIdChannel = new Channel(channelName, params);
         } else {
             bookingIdChannel = new Channel(channelName, new HashMap<>());
+            _Consumer.connect();
         }
         subscriptionChat = _Consumer.getSubscriptions().create(bookingIdChannel);
 
@@ -90,7 +95,6 @@ public final class ConfigChatSocket {
                 return null;
             });
         }
-        _Consumer.connect();
     }
 
     public void sendMessage(int channelId, String body) {
@@ -127,7 +131,7 @@ public final class ConfigChatSocket {
         return apiHelper.leaveChatRoom(chatRoomId);
     }
 
-    public LiveData<BaseResponse<MyClassResponse>> getOneToOneChatRooms() {
+    public MutableLiveData<BaseResponse<MyClassResponse>> getOneToOneChatRooms() {
         return apiHelper.getOneToOneChatRooms();
     }
 
@@ -153,69 +157,16 @@ public final class ConfigChatSocket {
         return apiHelper.sendMediaMessage(chatroomId, f, mediaType);
     }
 
+    public LiveData<BaseResponse<ChatroomDetailsResponseModel>> getChatroomDetails(int chatroomId) {
+        return apiHelper.getChatroomDetails(chatroomId);
+    }
+
     public void connect(Map<String, String> v) {
-        initSubscription(builder.channelName, v, builder.callback);
+        initSubscription(builder.getChannelName(), v, builder.getCallback());
     }
 
     public void disconnect() {
         _Consumer.disconnect();
     }
 
-    public static class Builder {
-        private String baseUrl;
-        private String channelName;
-        private Map<String, String> headers;
-        private Map<String, String> query;
-        private ChatCallback callback;
-        private Map<String, String> params;
-
-        public Builder(String baseUrl, String channelName) {
-            this.channelName = channelName;
-            this.baseUrl = baseUrl;
-        }
-
-        public Builder query(Map<String, String> options) {
-            this.query = options;
-            return this;
-        }
-
-        public Builder params(Map<String, String> params) {
-            this.params = params;
-            return this;
-        }
-
-        public Builder headers(Map<String, String> headers) {
-            this.headers = headers;
-            return this;
-        }
-
-        public Builder addChatListener(ChatCallback callback) {
-            this.callback = callback;
-            return this;
-        }
-
-        public ConfigChatSocket build() throws URISyntaxException {
-            synchronized (Builder.this) {
-                if (INSTANCE == null) {
-                    INSTANCE = new ConfigChatSocket(this);
-                }
-                return INSTANCE;
-            }
-        }
-
-    }
-
-    public interface ChatCallback {
-
-        void onConnected();
-
-        void onDisConnected();
-
-        void onRejected();
-
-        void onFailed(Throwable t);
-
-        <T> void onReceived(T any);
-
-    }
 }

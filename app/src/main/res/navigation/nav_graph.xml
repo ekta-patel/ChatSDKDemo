@@ -31,7 +31,11 @@
     <fragment
         android:id="@+id/mainChatFragment"
         android:name="com.example.chatsdkimpldemo.ui.chatmain.MainChatFragment"
-        android:label="MainChatFragment" />
+        android:label="MainChatFragment" >
+        <action
+            android:id="@+id/action_mainChatFragment_to_chatroomDetailsFragment"
+            app:destination="@id/chatroomDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/groupChatRoomsFragment"
         android:name="com.example.chatsdkimpldemo.ui.chatrooms.all.GroupChatRoomsFragment"
@@ -71,4 +75,8 @@
     <action
         android:id="@+id/action_global_selectUsersForShareFragment"
         app:destination="@id/selectUsersForShareFragment" />
+    <fragment
+        android:id="@+id/chatroomDetailsFragment"
+        android:name="com.example.chatsdkimpldemo.ui.chatroomdetail.ChatroomDetailsFragment"
+        android:label="ChatroomDetailsFragment" />
 </navigation>

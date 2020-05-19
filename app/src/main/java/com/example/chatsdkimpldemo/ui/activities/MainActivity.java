@@ -12,7 +12,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.chatsdkimpldemo.R;
+import com.example.chatsdkimpldemo.databinding.ActivityMainBinding;
 import com.example.chatsdkimpldemo.utils.Constants;
+import com.example.mychatlibrary.utils.Utilities;
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,10 +28,15 @@ public class MainActivity extends AppCompatActivity {
         window.getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        DataBindingUtil.setContentView(this, R.layout.activity_main);
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.createDefaultChatSocket();
-        viewModel.connectWebSocket(null);
+        if (Utilities.hasNetwork(MainActivity.this)) {
+            viewModel.connectWebSocket(null);
+        } else {
+            Snackbar.make(binding.getRoot(), "Internet may not be available", Snackbar.LENGTH_LONG).show();
+        }
+
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();

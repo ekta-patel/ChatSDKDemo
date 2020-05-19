@@ -77,6 +77,8 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
     private MediaRecorder recorder = null;
     private File audioFile = null;
     private File photoFile = null;
+    private boolean isGroup = false;
+
     private DownloadManager downloadManager;
     private BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -102,6 +104,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             if (b != null) {
                 mChatRoomId = b.getInt(Constants.BundleKeys.CHATROOM_ID);
                 if (b.getBoolean(Constants.BundleKeys.IS_GROUP)) {
+                    isGroup = true;
                     activityViewModel.getChatRoomMessages(mChatRoomId).observe(getViewLifecycleOwner(), this::updateList);
                 } else {
                     int mOtherUserId = b.getInt(Constants.BundleKeys.OTHER_USER_ID);
@@ -195,6 +198,13 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             }
         });
 
+        binding.ivUsername.setOnClickListener((v) -> {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(Constants.BundleKeys.IS_GROUP, isGroup);
+            bundle.putInt(Constants.BundleKeys.CHATROOM_ID, mChatRoomId);
+            navController.navigate(R.id.action_mainChatFragment_to_chatroomDetailsFragment, bundle);
+        });
+
         initAdapter();
 
         observeData();
@@ -211,7 +221,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
                 adapter.notifyDataSetChanged();
                 if (adapter.getItemCount() >= 1) {
                     binding.rvMessages.postDelayed(() -> {
-                        binding.rvMessages.smoothScrollToPosition(adapter.getItemCount() - 1);
+                        binding.rvMessages.scrollToPosition(adapter.getItemCount() - 1);
                     }, 100);
                 }
                 break;
@@ -319,10 +329,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
 //        });
         activityViewModel.getMessage().observe(getViewLifecycleOwner(), message -> {
                     messageList.add(message);
-                    adapter.notifyItemInserted(messageList.size());
-                    binding.rvMessages.postDelayed(() -> {
-                        binding.rvMessages.smoothScrollToPosition(adapter.getItemCount() - 1);
-                    }, 100);
+                    adapter.notifyItemInserted(messageList.size() - 1);
                 }
         );
 //        activityViewModel.getMediaMessageResponseMediatorLiveData().observe(getViewLifecycleOwner(), mediaMessageResponse -> {
@@ -417,7 +424,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding, Main
             File f = Utilities.createFileForExtension(requireContext(), extension);
             FileOutputStream outputStream = new FileOutputStream(f);
             Utilities.copy(inputStream, outputStream);
-            activityViewModel.sendMediaMessage(mChatRoomId, f, MediaType.parse(Objects.requireNonNull(mimeType))).observe(getViewLifecycleOwner(), this::mediaMessageObserver);
+//            activityViewModel.sendMediaMessage(mChatRoomId, f, MediaType.parse(Objects.requireNonNull(mimeType))).observe(getViewLifecycleOwner(), this::mediaMessageObserver);
         } catch (IOException e) {
             e.printStackTrace();
         }

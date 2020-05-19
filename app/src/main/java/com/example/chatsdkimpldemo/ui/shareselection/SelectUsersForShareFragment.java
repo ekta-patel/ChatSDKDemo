@@ -93,7 +93,6 @@ public class SelectUsersForShareFragment extends BaseFragment<FragmentSelectUser
                 showSnackbar("Choose a member to share");
             }
         });
-//        activityViewModel.getOneToOneChatRooms();
         binding.ivBack.setOnClickListener(v -> navController.navigateUp());
     }
 

@@ -1,14 +1,18 @@
 package com.example.chatsdkimpldemo.ui.activities;
 
+import android.app.Application;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.example.mychatlibrary.ChatSocketBuilder;
 import com.example.mychatlibrary.ConfigChatSocket;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
+import com.example.mychatlibrary.data.models.response.chatroomdetails.ChatroomDetailsResponseModel;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -31,11 +35,11 @@ import java.util.Objects;
 
 import okhttp3.MediaType;
 
-public class MainViewModel extends ViewModel {
+public class MainViewModel extends AndroidViewModel {
 
     private static final String TAG = MainViewModel.class.getSimpleName();
     private ConfigChatSocket chatSocket;
-    private ConfigChatSocket.ChatCallback defaultChannelListener = new ConfigChatSocket.ChatCallback() {
+    private ChatSocketBuilder.ChatCallback defaultChannelListener = new ChatSocketBuilder.ChatCallback() {
 
         @Override
         public void onConnected() {
@@ -103,7 +107,7 @@ public class MainViewModel extends ViewModel {
         }
     };
 
-    private ConfigChatSocket.ChatCallback newChannelListener = new ConfigChatSocket.ChatCallback() {
+    private ChatSocketBuilder.ChatCallback newChannelListener = new ChatSocketBuilder.ChatCallback() {
         @Override
         public void onConnected() {
 
@@ -130,6 +134,10 @@ public class MainViewModel extends ViewModel {
         }
     };
 
+    public MainViewModel(@NonNull Application application) {
+        super(application);
+    }
+
 
     void createDefaultChatSocket() {
         try {
@@ -140,7 +148,7 @@ public class MainViewModel extends ViewModel {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-            chatSocket = new ConfigChatSocket.Builder("ws://13.235.232.157/cable", "ChatroomsChannel").query(options).addChatListener(defaultChannelListener).build();
+            chatSocket = new ChatSocketBuilder(getApplication(), "ws://13.235.232.157/cable", "ChatroomsChannel").query(options).addChatListener(defaultChannelListener).build();
         } catch (
                 URISyntaxException e) {
             e.printStackTrace();
@@ -199,6 +207,10 @@ public class MainViewModel extends ViewModel {
 
     public LiveData<BaseResponse<MediaMessageResponse>> sendMediaMessage(int chatroomId, File f, MediaType mediaType) {
         return chatSocket.sendMediaMessage(chatroomId, f, mediaType);
+    }
+
+    public LiveData<BaseResponse<ChatroomDetailsResponseModel>> getChatroomDetails(int chatroomId) {
+        return chatSocket.getChatroomDetails(chatroomId);
     }
 
     public LiveData<Message> getMessage() {

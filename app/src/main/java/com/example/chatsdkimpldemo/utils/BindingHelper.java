@@ -36,4 +36,20 @@ public class BindingHelper {
             e.printStackTrace();
         }
     }
+
+    public static String getCreatedAtDate(String datetime) {
+        if (datetime != null) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            try {
+                Date date = format.parse(datetime);
+                SimpleDateFormat localDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                return localDateFormat.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return "";
+            }
+        } else {
+            return "";
+        }
+    }
 }

@@ -32,8 +32,8 @@
             android:id="@+id/ivBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="24dp"
             android:scaleType="fitXY"
-            app:layout_constraintBottom_toTopOf="@id/tvMessages"
             app:layout_constraintStart_toEndOf="@id/guideLineBegin"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_back" />

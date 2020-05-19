@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="isVideo"
+            type="Boolean" />
+
+        <variable
+            name="message"
+            type="com.example.mychatlibrary.data.models.response.messages.Message" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivMedia"
+            android:layout_width="96dp"
+            android:layout_height="78dp"
+            app:imageUrl="@{message.attachment}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="@{isVideo ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/ivMedia"
+            app:layout_constraintEnd_toEndOf="@id/ivMedia"
+            app:layout_constraintStart_toStartOf="@id/ivMedia"
+            app:layout_constraintTop_toTopOf="@id/ivMedia" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

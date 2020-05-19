@@ -2,6 +2,8 @@ package com.example.mychatlibrary.data.remote;
 
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
+import com.example.mychatlibrary.data.models.response.chatroom.ChatroomForDetails;
+import com.example.mychatlibrary.data.models.response.chatroomdetails.ChatroomDetailsResponseModel;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
 import com.example.mychatlibrary.data.models.response.groupchat.GroupChatResponse;
@@ -59,4 +61,7 @@ public interface ApiService {
     Call<BaseResponse<MediaMessageResponse>> sendMediaMessage(@Path("chatroomId") int chatRoomId,
                                                               @Part("message[media_type]") RequestBody type,
                                                               @Part MultipartBody.Part file);
+
+    @GET("chatrooms/{chatroomId}/chatroom_detail")
+    Call<BaseResponse<ChatroomDetailsResponseModel>> getChatroomDetails(@Path("chatroomId") int chatRoomId);
 }

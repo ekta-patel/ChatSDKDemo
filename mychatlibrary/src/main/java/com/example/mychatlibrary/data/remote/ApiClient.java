@@ -1,5 +1,7 @@
 package com.example.mychatlibrary.data.remote;
 
+import android.content.Context;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -9,10 +11,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "http://13.235.232.157/api/v1/";
-    private static Retrofit retrofit = null;
+    private final String BASE_URL = "http://13.235.232.157/api/v1/";
+    private Retrofit retrofit = null;
+    private Context context;
 
-    private static synchronized Retrofit getClient() {
+    public ApiClient(Context context) {
+        this.context = context;
+    }
+
+    private synchronized Retrofit getClient() {
         if (retrofit == null) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
@@ -22,6 +29,7 @@ public class ApiClient {
                     .writeTimeout(60, TimeUnit.SECONDS)
                     .connectTimeout(60, TimeUnit.SECONDS)
                     .addInterceptor(loggingInterceptor)
+                    .addInterceptor(new ConnectivityInterceptor(context))
                     .addInterceptor(new HeaderInterceptor())
                     .build();
             retrofit = new Retrofit.Builder()
@@ -33,7 +41,7 @@ public class ApiClient {
         return retrofit;
     }
 
-    public static synchronized ApiService getApiService() {
+    public synchronized ApiService getApiService() {
         return getClient().create(ApiService.class);
     }
 }
