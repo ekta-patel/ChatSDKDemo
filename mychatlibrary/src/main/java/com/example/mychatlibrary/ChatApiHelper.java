@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomDataRequest;
 import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
 import com.example.mychatlibrary.data.models.response.base.Status;
@@ -98,7 +99,21 @@ final class ChatApiHelper {
     MutableLiveData<BaseResponse<CreateChatroomResponse>> createChatRoom(CreateChatRoomRequest request) {
         MutableLiveData<BaseResponse<CreateChatroomResponse>> data = new MutableLiveData<>();
         data.postValue(new BaseResponse<>(Status.LOADING, null));
-        apiService.createChatRoom(request).enqueue(new Callback<BaseResponse<CreateChatroomResponse>>() {
+        CreateChatRoomDataRequest c = request.getChatRoomDataRequest();
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        builder.addFormDataPart("chatroom[name]", c.getName());
+        for (int i :
+                c.getUserIds()) {
+            builder.addFormDataPart("chatroom[user_ids][]", String.valueOf(i));
+        }
+        if (c.getDescription() != null) {
+            builder.addFormDataPart("chatroom[description]", c.getDescription());
+        }
+        if (c.getGroupImage() != null) {
+            builder.addFormDataPart("chatroom[group_image]", c.getGroupImage().getName(), RequestBody.create(c.getGroupImage(), MultipartBody.FORM));
+        }
+
+        apiService.createChatRoom(builder.build()).enqueue(new Callback<BaseResponse<CreateChatroomResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<CreateChatroomResponse>> call, Response<BaseResponse<CreateChatroomResponse>> response) {
                 BaseResponse<CreateChatroomResponse> r = response.body();
@@ -280,12 +295,12 @@ final class ChatApiHelper {
     MutableLiveData<BaseResponse<MediaMessageResponse>> sendMediaMessage(int chatRoomId, File f, MediaType mediaType) {
         MutableLiveData<BaseResponse<MediaMessageResponse>> data = new MutableLiveData<>();
         data.postValue(new BaseResponse<>(Status.LOADING, null));
-        RequestBody requestFile = RequestBody.create(f, mediaType);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("message[file]", f.getName(), requestFile);
-        String descriptionString = mediaType.type();
-        RequestBody description =
-                RequestBody.create(descriptionString, MediaType.parse("text/plain"));
-        apiService.sendMediaMessage(chatRoomId, description, body).enqueue(new Callback<BaseResponse<MediaMessageResponse>>() {
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        if (f != null) {
+            builder.addFormDataPart("message[media_type]", mediaType.type());
+            builder.addFormDataPart("message[file]", f.getName(), RequestBody.create(f, MultipartBody.FORM));
+        }
+        apiService.sendMediaMessage(chatRoomId, builder.build()).enqueue(new Callback<BaseResponse<MediaMessageResponse>>() {
             @Override
             public void onResponse(Call<BaseResponse<MediaMessageResponse>> call, Response<BaseResponse<MediaMessageResponse>> response) {
                 BaseResponse<MediaMessageResponse> r = response.body();

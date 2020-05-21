@@ -42,6 +42,12 @@ public class ChatroomForDetails {
     @SerializedName("messages")
     @Expose
     private List<Message> messages = null;
+    @SerializedName("group_image")
+    @Expose
+    private String groupImage;
+    @SerializedName("description")
+    @Expose
+    private String description;
 
     public int getId() {
         return id;
@@ -129,5 +135,21 @@ public class ChatroomForDetails {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getGroupImage() {
+        return groupImage;
+    }
+
+    public void setGroupImage(String groupImage) {
+        this.groupImage = groupImage;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

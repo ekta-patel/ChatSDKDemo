@@ -1,8 +1,6 @@
 package com.example.mychatlibrary.data.remote;
 
-import com.example.mychatlibrary.data.models.request.createchatroom.CreateChatRoomRequest;
 import com.example.mychatlibrary.data.models.response.base.BaseResponse;
-import com.example.mychatlibrary.data.models.response.chatroom.ChatroomForDetails;
 import com.example.mychatlibrary.data.models.response.chatroomdetails.ChatroomDetailsResponseModel;
 import com.example.mychatlibrary.data.models.response.createchatroom.CreateChatroomResponse;
 import com.example.mychatlibrary.data.models.response.deletechatroom.DeleteChatRoomResponse;
@@ -16,15 +14,12 @@ import com.example.mychatlibrary.data.models.response.webinar.WebinarResponse;
 
 import java.util.List;
 
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -36,7 +31,7 @@ public interface ApiService {
     Call<BaseResponse<MyClassResponse>> getOneToOneChatRooms();
 
     @POST("chatrooms")
-    Call<BaseResponse<CreateChatroomResponse>> createChatRoom(@Body CreateChatRoomRequest request);
+    Call<BaseResponse<CreateChatroomResponse>> createChatRoom(@Body RequestBody requestBody);
 
     @DELETE("chatrooms/{chatroomId}")
     Call<BaseResponse<DeleteChatRoomResponse>> deleteChatRoom(@Path("chatroomId") int chatRoomId);
@@ -56,11 +51,9 @@ public interface ApiService {
     @GET("direct_messages/{userId}")
     Call<BaseResponse<MessagesResponseModel>> getUserMessages(@Path("userId") int userId);
 
-    @Multipart
     @POST("chatrooms/{chatroomId}/messages")
     Call<BaseResponse<MediaMessageResponse>> sendMediaMessage(@Path("chatroomId") int chatRoomId,
-                                                              @Part("message[media_type]") RequestBody type,
-                                                              @Part MultipartBody.Part file);
+                                                              @Body RequestBody requestBody);
 
     @GET("chatrooms/{chatroomId}/chatroom_detail")
     Call<BaseResponse<ChatroomDetailsResponseModel>> getChatroomDetails(@Path("chatroomId") int chatRoomId);

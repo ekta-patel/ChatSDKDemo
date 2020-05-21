@@ -48,9 +48,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
+            app:imageUrl="@{chatroom.groupImage}"
             app:layout_constraintBottom_toTopOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_group_dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivBack"
@@ -125,6 +125,7 @@
                     android:text="Description"
                     android:textColor="#252426"
                     android:textSize="16sp"
+                    android:visibility="@{isGroup ? View.VISIBLE : View.GONE}"
                     app:fontFamily="@font/montserrat_bold"
                     app:layout_constraintStart_toStartOf="@id/innerGuideLineBegin"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -134,8 +135,9 @@
                     style="@style/RegularTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{chatroom.name}"
+                    android:text="@{chatroom.description}"
                     android:textColor="#9d9d9d"
+                    android:visibility="@{isGroup ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="@id/innerGuideLineEnd"
                     app:layout_constraintStart_toStartOf="@id/innerGuideLineBegin"
                     app:layout_constraintTop_toBottomOf="@id/tvDescription" />
@@ -146,6 +148,7 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="8dp"
                     android:background="#ececec"
+                    android:visibility="@{isGroup ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="@id/innerGuideLineEnd"
                     app:layout_constraintStart_toStartOf="@id/innerGuideLineBegin"
                     app:layout_constraintTop_toBottomOf="@id/tvDescriptionVal" />

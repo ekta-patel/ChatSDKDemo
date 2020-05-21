@@ -9,11 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -75,9 +75,11 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding> impl
     private ConfigChatSocket chatSocket;
     private MainViewModel activityViewModel;
     private MediaRecorder recorder = null;
+    private MediaPlayer player = null;
     private File audioFile = null;
     private File photoFile = null;
     private boolean isGroup = false;
+    boolean startPlaying = true;
 
     private DownloadManager downloadManager;
     private BroadcastReceiver onComplete = new BroadcastReceiver() {
@@ -286,7 +288,7 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding> impl
     private void initAdapter() {
         messageList = new ArrayList<>();
         adapter = new ChatMessagesAdapter(messageList, MainChatFragment.this);
-        binding.rvMessages.addItemDecoration(new MarginItemDecorator(16, 16, 16, 16));
+        binding.rvMessages.addItemDecoration(new MarginItemDecorator((int) getResources().getDimension(R.dimen.normal_margin), (int) getResources().getDimension(R.dimen.normal_margin), (int) getResources().getDimension(R.dimen.too_min_margin), (int) getResources().getDimension(R.dimen.too_min_margin)));
         binding.rvMessages.setAdapter(adapter);
     }
 
@@ -445,6 +447,10 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding> impl
             recorder.release();
             recorder = null;
         }
+        if (player != null) {
+            player.release();
+            player = null;
+        }
     }
 
     @Override
@@ -491,19 +497,8 @@ public class MainChatFragment extends BaseFragment<FragmentMainChatBinding> impl
 
     @Override
     public void onItemClick(View v, Message data, int position) {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            if (data.getAttachment() != null) {
-                Uri uri = Uri.parse("http://13.235.232.157" + data.getAttachment());
-                DownloadManager.Request request = new DownloadManager.Request(uri);
-                request.setDescription("Downloading file");
-                request.setTitle(getString(R.string.app_name));
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, uri.getLastPathSegment());
-                downloadManager.enqueue(request);
-            }
-        } else {
-            ActivityCompat.requestPermissions(requireActivity(),
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.PermissionCodes.WRITE_EXTERNAL_STORAGE);
-        }
+        ActivityCompat.requestPermissions(requireActivity(),
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.PermissionCodes.WRITE_EXTERNAL_STORAGE);
     }
+
 }

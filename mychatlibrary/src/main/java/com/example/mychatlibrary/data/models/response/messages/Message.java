@@ -39,9 +39,14 @@ public class Message implements Parcelable {
     @Expose
     private String attachment;
     @SerializedName("mime_type")
+    @Expose
     private String mimeType;
     @SerializedName("media_type")
+    @Expose
     private String mediaType;
+    @SerializedName("thumbnail")
+    @Expose
+    private String thumbnail;
 
     public int getId() {
         return id;
@@ -155,6 +160,7 @@ public class Message implements Parcelable {
         attachment = in.readString();
         mimeType = in.readString();
         mediaType = in.readString();
+        thumbnail = in.readString();
     }
 
     @Override
@@ -176,6 +182,7 @@ public class Message implements Parcelable {
         dest.writeString(attachment);
         dest.writeString(mimeType);
         dest.writeString(mediaType);
+        dest.writeString(thumbnail);
     }
 
     @SuppressWarnings("unused")

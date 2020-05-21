@@ -1,11 +1,15 @@
 package com.example.chatsdkimpldemo.ui.chatmain;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,12 +34,16 @@ import com.example.chatsdkimpldemo.ui.base.RecyclerViewItemClickListener;
 import com.example.chatsdkimpldemo.utils.Constants;
 import com.example.mychatlibrary.data.models.response.messages.Message;
 
+import java.io.IOException;
 import java.util.List;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Message> messageList;
     private RecyclerViewItemClickListener<Message> listener;
+    private MediaPlayer player = null;
 
     ChatMessagesAdapter(List<Message> messageList, RecyclerViewItemClickListener<Message> listener) {
         this.messageList = messageList;
@@ -444,16 +452,18 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    static class SenderAudioMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class SenderAudioMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemSenderMediaTypeAudioBinding binding;
         private RecyclerViewItemClickListener<Message> listener;
+        private boolean startPlaying;
 
         SenderAudioMediaViewHolder(ItemSenderMediaTypeAudioBinding binding, RecyclerViewItemClickListener<Message> listener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
             itemView.setOnClickListener(this);
+            itemView.findViewById(R.id.playAudio).setOnClickListener(this);
         }
 
         void bind(Message m) {
@@ -463,20 +473,93 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         @Override
         public void onClick(View v) {
+            if (v.getId() == R.id.playAudio) {
+                onPlay(startPlaying, "http://13.235.232.157" + binding.getMessage().getAttachment());
+                if (startPlaying) {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_pause_24dp));
+                } else {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_play_arrow_24dp));
+                }
+                startPlaying = !startPlaying;
+            }
             listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
         }
+
+        private void onPlay(boolean start, String url) {
+            if (start) {
+                startPlaying(url);
+            } else {
+                stopPlaying();
+            }
+        }
+
+        private void startPlaying(String url) {
+            player = new MediaPlayer();
+            try {
+                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                player.setDataSource(url);
+                player.setOnCompletionListener(mp -> {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_play_arrow_24dp));
+                    mp.stop();
+                    mp.release();
+                    if (player != null) {
+                        player.release();
+                        player = null;
+                    }
+                });
+                player.prepare();
+                int total = player.getDuration();
+                binding.audioSeekbar.setMax(total);
+                player.start();
+            } catch (IOException | IllegalStateException e) {
+                Log.e(TAG, "prepare() failed");
+            }
+        }
+
+        private void stopPlaying() {
+            if (player != null) {
+                player.release();
+                player = null;
+            }
+        }
+
     }
 
-    static class ReceiverAudioMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ReceiverAudioMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemReceiverMediaTypeAudioBinding binding;
         private RecyclerViewItemClickListener<Message> listener;
+        private boolean startPlaying;
+        private int total;
+        private Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    while (player != null) {
+                        if (player.isPlaying()) {
+                            int currentPosition = player.getCurrentPosition();
+                            if (currentPosition < total) {
+                                Thread.sleep(100);
+                                currentPosition = player.getCurrentPosition();
+                                binding.audioSeekbar.setProgress(currentPosition);
+                            }
+                        }
+
+                    }
+                } catch (Exception e) {
+                    return;
+                }
+            }
+        };
+
 
         ReceiverAudioMediaViewHolder(ItemReceiverMediaTypeAudioBinding binding, RecyclerViewItemClickListener<Message> listener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
             itemView.setOnClickListener(this);
+            itemView.findViewById(R.id.playAudio).setOnClickListener(this);
         }
 
         void bind(Message m) {
@@ -486,20 +569,95 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         @Override
         public void onClick(View v) {
-            listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+            if (v.getId() == R.id.playAudio) {
+                onPlay(startPlaying, "http://13.235.232.157" + binding.getMessage().getAttachment());
+                if (startPlaying) {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_pause_24dp));
+                } else {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_play_arrow_24dp));
+                }
+                startPlaying = !startPlaying;
+            } else {
+                listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+            }
+        }
+
+        private void onPlay(boolean start, String url) {
+            if (start) {
+                startPlaying(url);
+            } else {
+                stopPlaying();
+            }
+        }
+
+        private void startPlaying(String url) {
+            player = new MediaPlayer();
+            try {
+                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                player.setDataSource(url);
+                player.setOnCompletionListener(mp -> {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_play_arrow_24dp));
+                    mp.stop();
+                    mp.release();
+                    if (player != null) {
+                        player.release();
+                        player = null;
+                    }
+
+                });
+                player.prepare();
+                total = player.getDuration();
+                binding.audioSeekbar.setMax(total);
+                player.start();
+                new Thread(runnable).start();
+            } catch (IOException | IllegalStateException e) {
+                Log.e(TAG, "prepare() failed");
+            }
+        }
+
+        private void stopPlaying() {
+            if (player != null) {
+                player.release();
+                player = null;
+            }
         }
     }
 
-    static class ReceiverAudioMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ReceiverAudioMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemReceiverMediaTypeAudioTwoBinding binding;
         private RecyclerViewItemClickListener<Message> listener;
+        private boolean startPlaying;
+        private int total;
+        private Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    while (player != null) {
+                        if (player.isPlaying()) {
+                            int currentPosition = player.getCurrentPosition();
+                            if (currentPosition < total) {
+                                Thread.sleep(100);
+                                currentPosition = player.getCurrentPosition();
+                                binding.audioSeekbar.setProgress(currentPosition);
+                            }
+                        }
+
+                    }
+                } catch (Exception e) {
+                    return;
+                }
+            }
+        };
+
 
         ReceiverAudioMedia2ViewHolder(ItemReceiverMediaTypeAudioTwoBinding binding, RecyclerViewItemClickListener<Message> listener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
             itemView.setOnClickListener(this);
+            itemView.findViewById(R.id.playAudio).setOnClickListener(this);
         }
 
         void bind(Message m) {
@@ -509,19 +667,93 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         @Override
         public void onClick(View v) {
-            listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+            if (v.getId() == R.id.playAudio) {
+                onPlay(startPlaying, "http://13.235.232.157" + binding.getMessage().getAttachment());
+                if (startPlaying) {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_pause_24dp));
+                } else {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_play_arrow_24dp));
+                }
+                startPlaying = !startPlaying;
+            } else {
+                listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+            }
+        }
+
+        private void onPlay(boolean start, String url) {
+            if (start) {
+                startPlaying(url);
+            } else {
+                stopPlaying();
+            }
+        }
+
+        private void startPlaying(String url) {
+            player = new MediaPlayer();
+            try {
+                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                player.setDataSource(url);
+                player.setOnCompletionListener(mp -> {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_play_arrow_24dp));
+                    mp.stop();
+                    mp.release();
+                    if (player != null) {
+                        player.release();
+                        player = null;
+                    }
+
+                });
+                player.prepare();
+                total = player.getDuration();
+                binding.audioSeekbar.setMax(total);
+                player.start();
+                new Thread(runnable).start();
+            } catch (IOException | IllegalStateException e) {
+                Log.e(TAG, "prepare() failed");
+            }
+        }
+
+        private void stopPlaying() {
+            if (player != null) {
+                player.release();
+                player = null;
+            }
         }
     }
 
-    static class SenderAudioMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class SenderAudioMedia2ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ItemSenderMediaTypeAudioTwoBinding binding;
         private RecyclerViewItemClickListener<Message> listener;
+        private boolean startPlaying;
+        private int total;
+        private Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    while (player != null) {
+                        if (player.isPlaying()) {
+                            int currentPosition = player.getCurrentPosition();
+                            if (currentPosition < total) {
+                                Thread.sleep(100);
+                                currentPosition = player.getCurrentPosition();
+                                binding.audioSeekbar.setProgress(currentPosition);
+                            }
+                        }
+
+                    }
+                } catch (Exception e) {
+                    return;
+                }
+            }
+        };
 
         SenderAudioMedia2ViewHolder(ItemSenderMediaTypeAudioTwoBinding binding, RecyclerViewItemClickListener<Message> listener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
             itemView.setOnClickListener(this);
+            itemView.findViewById(R.id.playAudio).setOnClickListener(this);
         }
 
         void bind(Message m) {
@@ -531,8 +763,59 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         @Override
         public void onClick(View v) {
-            listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+            if (v.getId() == R.id.playAudio) {
+                onPlay(startPlaying, "http://13.235.232.157" + binding.getMessage().getAttachment());
+                if (startPlaying) {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_pause_24dp));
+                } else {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_play_arrow_24dp));
+                }
+                startPlaying = !startPlaying;
+            } else {
+                listener.onItemClick(v, binding.getMessage(), getAdapterPosition());
+            }
         }
+
+        private void onPlay(boolean start, String url) {
+            if (start) {
+                startPlaying(url);
+            } else {
+                stopPlaying();
+            }
+        }
+
+        private void startPlaying(String url) {
+            player = new MediaPlayer();
+            try {
+                player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                player.setDataSource(url);
+                player.setOnCompletionListener(mp -> {
+                    binding.playAudio.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_play_arrow_24dp));
+                    mp.stop();
+                    mp.release();
+                    if (player != null) {
+                        player.release();
+                        player = null;
+                    }
+
+                });
+                player.prepare();
+                total = player.getDuration();
+                binding.audioSeekbar.setMax(total);
+                player.start();
+                new Thread(runnable).start();
+            } catch (IOException | IllegalStateException e) {
+                Log.e(TAG, "prepare() failed");
+            }
+        }
+
+        private void stopPlaying() {
+            if (player != null) {
+                player.release();
+                player = null;
+            }
+        }
+
     }
 
     static class SenderDocMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
